@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html lang="vi" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Đặt phòng</title>
+    <link rel="stylesheet" th:href="@{/css/app.css}">
+</head>
+<body>
+<div th:replace="~{fragments/nav :: nav}"></div>
+<div class="container">
+
+    <h1>Quản lý đặt phòng</h1>
+    <div class="alert success" th:if="${message}" th:text="${message}"></div>
+    <div class="alert" th:if="${error}" th:text="${error}"></div>
+    <div class="card">
+        <div class="actions">
+            <a class="btn" href="/admin/dat-phong/them">Thêm đặt phòng</a>
+            <a class="btn secondary" href="/admin/dat-phong/chon-khach">Chọn khách để đặt</a>
+        </div>
+        <table class="table" style="margin-top:14px">
+            <thead>
+            <tr>
+                <th>Mã CT</th>
+                <th>Ngày thực hiện</th>
+                <th>Khách hàng</th>
+                <th>Ngày nhận</th>
+                <th>Ngày trả</th>
+                <th>Phòng</th>
+                <th>Nhân viên</th>
+                <th>Trạng thái</th>
+                <th>Thao tác</th>
+            </tr>
+            </thead>
+            <tbody>
+            <tr th:each="item : ${items}">
+                <td th:text="${item.maCtDatPhong}"></td>
+                <td th:text="${item.ngayThucHien}"></td>
+                <td th:text="${item.khachHang != null ? item.khachHang.hoTen : ''}"></td>
+                <td th:text="${item.ngayNhan}"></td>
+                <td th:text="${item.ngayTra}"></td>
+                <td th:text="${item.phong != null ? item.phong.maPhong : ''}"></td>
+                <td th:text="${item.nhanVien != null ? item.nhanVien.tenNhanVien : ''}"></td>
+                <td>
+                    <span class="status-badge"
+                          th:classappend="${item.trangThai == 'DA_HUY' ? ' danger' : ((item.trangThai == 'DA_XAC_NHAN' or item.trangThai == 'CHO_XAC_NHAN' or item.trangThai == 'CHO_HUY' or item.trangThai == null) ? ' warning' : ' success')}"
+                          th:text="${item.trangThaiHienThi}"></span>
+                </td>
+                <td class="table-actions">
+                    <a class="btn small" th:href="@{/admin/dat-phong/chi-tiet/{id}(id=${item.maCtDatPhong})}">Chi tiết</a>
+                    <a class="btn small"
+                       th:if="${item.trangThai == null or item.trangThai == 'CHO_ADMIN_DUYET' or item.trangThai == 'CHO_XAC_NHAN'}"
+                       th:href="@{/admin/dat-phong/xac-nhan/{id}(id=${item.maCtDatPhong})}">Xác nhận đặt phòng</a>
+                    <a class="btn small"
+                       th:if="${item.trangThai == 'DA_THANH_TOAN'}"
+                       th:href="@{/admin/dat-phong/tra-phong/{id}(id=${item.maCtDatPhong})}">Trả phòng</a>
+                    <a class="btn small danger"
+                       th:if="${item.trangThai == null or item.trangThai == 'CHO_ADMIN_DUYET' or item.trangThai == 'CHO_XAC_NHAN' or item.trangThai == 'QUA_HAN_THANH_TOAN'}"
+                       th:href="@{/admin/dat-phong/huy/{id}(id=${item.maCtDatPhong})}"
+                       onclick="return confirm('Hủy đơn đặt phòng này?')">Hủy</a>
+                    <a class="btn small danger"
+                       th:if="${item.trangThai == 'CHO_HUY'}"
+                       th:href="@{/admin/dat-phong/huy/{id}(id=${item.maCtDatPhong})}"
+                       onclick="return confirm('Đồng ý hủy đơn đặt phòng này?')">Đồng ý hủy</a>
+                    <a class="btn small secondary"
+                       th:if="${item.trangThai == 'CHO_HUY'}"
+                       th:href="@{/admin/dat-phong/tu-choi-huy/{id}(id=${item.maCtDatPhong})}"
+                       onclick="return confirm('Từ chối yêu cầu hủy đơn này?')">Từ chối</a>
+                    <a class="btn small secondary" th:href="@{/admin/dat-phong/sua/{id}(id=${item.maCtDatPhong})}">Sửa</a>
+                    <a class="btn small danger" th:href="@{/admin/dat-phong/xoa/{id}(id=${item.maCtDatPhong})}"
+                       onclick="return confirm('Xóa đặt phòng này?')">Xóa</a>
+                </td>
+            </tr>
+            </tbody>
+        </table>
+    </div>
+</div>
+</body>
+</html>

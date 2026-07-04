@@ -1,0 +1,160 @@
+<!DOCTYPE html>
+<html lang="vi" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Đặt phòng</title>
+    <link rel="stylesheet" th:href="@{/css/app.css}">
+</head>
+<body class="client-page">
+<div th:replace="~{client/fragments :: nav}"></div>
+<main class="client-section auth-wrap">
+    <div class="client-card auth-card">
+        <h1>Đặt phòng</h1>
+        <p th:text="'Khách hàng: ' + ${khachHang.hoTen}"></p>
+        <div class="alert" th:if="${error}" th:text="${error}"></div>
+        <form method="post" action="/dat-phong">
+            <div class="form-row">
+                <label>Phòng</label>
+                <input type="hidden"
+                       name="maPhong"
+                       th:if="${lockRoomSelection and phongChon != null}"
+                       th:value="${phongChon.maPhong}">
+                <select id="maPhong"
+                        th:name="${lockRoomSelection ? '_maPhongLocked' : 'maPhong'}"
+                        th:disabled="${lockRoomSelection}"
+                        required>
+                    <option value="">-- Chọn phòng --</option>
+                    <option th:each="p : ${phongs}"
+                            th:value="${p.maPhong}"
+                            th:data-price="${p.loaiPhong != null && p.loaiPhong.giaPhong != null ? p.loaiPhong.giaPhong : 0}"
+                            th:data-room="${'Phòng ' + p.maPhong}"
+                            th:selected="${phongChon != null && phongChon.maPhong == p.maPhong}"
+                            th:text="'Phòng ' + ${p.maPhong} + ' - ' + ${p.loaiPhong != null ? p.loaiPhong.tenLoaiPhong : ''} + ' - ' + ${p.loaiPhong != null && p.loaiPhong.giaPhong != null ? #numbers.formatInteger(p.loaiPhong.giaPhong, 0, 'POINT') : ''}">
+                    </option>
+                </select>
+            </div>
+            <div class="form-row">
+                <label>Ngày nhận</label>
+                <input id="ngayNhan" type="date" name="ngayNhan" th:value="${ngayNhan}" th:min="${today}" required>
+            </div>
+            <div class="form-row">
+                <label>Ngày trả</label>
+                <input id="ngayTra" type="date" name="ngayTra" th:value="${ngayTra}" th:min="${today}" required>
+            </div>
+            <div class="form-row service-picker" th:if="${!#lists.isEmpty(dichVus)}">
+                <label>Chọn thêm dịch vụ</label>
+                <div class="service-option-list">
+                    <label class="service-option" th:each="dv : ${dichVus}">
+                        <input class="service-option-input"
+                               type="checkbox"
+                               name="dichVuIds"
+                               th:value="${dv.maDichVu}"
+                               th:data-price="${dv.giaDichVu != null ? dv.giaDichVu : 0}"
+                               th:checked="${selectedDichVuIds != null and #lists.contains(selectedDichVuIds, dv.maDichVu)}">
+                        <span>
+                            <strong th:text="${dv.tenDichVuHienThi}">Dịch vụ</strong>
+                            <small th:text="${dv.giaDichVu != null ? #numbers.formatInteger(dv.giaDichVu, 0, 'POINT') + ' VNĐ / ngày' : '0 VNĐ / ngày'}"></small>
+                        </span>
+                    </label>
+                </div>
+            </div>
+            <div class="booking-summary">
+                <div>
+                    <span>Đơn giá phòng</span>
+                    <strong id="summaryPrice">0</strong>
+                </div>
+                <div>
+                    <span>Số đêm</span>
+                    <strong id="summaryNights">0</strong>
+                </div>
+                <div>
+                    <span>Tiền phòng</span>
+                    <strong id="summaryRoomTotal">0</strong>
+                </div>
+                <div>
+                    <span>Dịch vụ / ngày</span>
+                    <strong id="summaryServiceDaily">0</strong>
+                </div>
+                <div>
+                    <span>Tiền dịch vụ</span>
+                    <strong id="summaryServiceTotal">0</strong>
+                </div>
+                <div>
+                    <span>Tổng cộng</span>
+                    <strong id="summaryTotal">0</strong>
+                </div>
+            </div>
+            <button class="btn" type="submit">Gửi yêu cầu đặt phòng</button>
+        </form>
+    </div>
+</main>
+<script>
+    const roomSelect = document.getElementById('maPhong');
+    const checkIn = document.getElementById('ngayNhan');
+    const checkOut = document.getElementById('ngayTra');
+    const summaryPrice = document.getElementById('summaryPrice');
+    const summaryNights = document.getElementById('summaryNights');
+    const summaryRoomTotal = document.getElementById('summaryRoomTotal');
+    const summaryServiceDaily = document.getElementById('summaryServiceDaily');
+    const summaryServiceTotal = document.getElementById('summaryServiceTotal');
+    const summaryTotal = document.getElementById('summaryTotal');
+    const serviceOptions = document.querySelectorAll('.service-option-input');
+    const money = new Intl.NumberFormat('vi-VN');
+
+    function updateSummary() {
+        const option = roomSelect.options[roomSelect.selectedIndex];
+        const price = option ? Number(option.dataset.price || 0) : 0;
+        const start = checkIn.value ? new Date(checkIn.value) : null;
+        const end = checkOut.value ? new Date(checkOut.value) : null;
+        let nights = 0;
+
+        if (start && end && end > start) {
+            nights = Math.round((end - start) / 86400000);
+        }
+
+        let serviceDaily = 0;
+        serviceOptions.forEach(function(input) {
+            if (input.checked) {
+                serviceDaily += Number(input.dataset.price || 0);
+            }
+        });
+
+        const roomTotal = price * nights;
+        const serviceTotal = serviceDaily * nights;
+        summaryPrice.textContent = money.format(price) + ' VNĐ';
+        summaryNights.textContent = nights;
+        summaryRoomTotal.textContent = money.format(roomTotal) + ' VNĐ';
+        summaryServiceDaily.textContent = money.format(serviceDaily) + ' VNĐ';
+        summaryServiceTotal.textContent = money.format(serviceTotal) + ' VNĐ';
+        summaryTotal.textContent = money.format(roomTotal + serviceTotal) + ' VNĐ';
+    }
+
+    roomSelect.addEventListener('change', updateSummary);
+    checkIn.addEventListener('change', () => {
+        if (checkIn.value) {
+            const nextDate = new Date(checkIn.value);
+            nextDate.setDate(nextDate.getDate() + 1);
+            checkOut.min = nextDate.toISOString().slice(0, 10);
+            if (!checkOut.value || checkOut.value <= checkIn.value) {
+                checkOut.value = checkOut.min;
+            }
+        }
+        updateSummary();
+    });
+    checkOut.addEventListener('change', updateSummary);
+    serviceOptions.forEach(function(input) {
+        input.addEventListener('change', updateSummary);
+    });
+    if (checkIn.value) {
+        const nextDate = new Date(checkIn.value);
+        nextDate.setDate(nextDate.getDate() + 1);
+        checkOut.min = nextDate.toISOString().slice(0, 10);
+        if (!checkOut.value || checkOut.value <= checkIn.value) {
+            checkOut.value = checkOut.min;
+        }
+    }
+    updateSummary();
+</script>
+<div th:replace="~{client/fragments :: footer}"></div>
+</body>
+</html>

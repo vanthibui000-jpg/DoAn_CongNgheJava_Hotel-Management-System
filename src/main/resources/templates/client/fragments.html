@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html lang="vi" xmlns:th="http://www.thymeleaf.org">
+<body>
+<nav class="client-nav" th:fragment="nav">
+    <a class="client-brand" href="/">Khách sạn Vip</a>
+    <a href="/">Trang chủ</a>
+    <a href="/phong">Phòng</a>
+    <a href="/dich-vu">Dịch vụ</a>
+    <a href="/danh-gia">Đánh giá</a>
+    <a href="/lien-he">Liên hệ</a>
+    <span class="spacer"></span>
+    <span class="nav-greeting"
+          th:if="${session.khachHangDangNhap != null}"
+          th:text="${'Xin chào, ' + session.khachHangDangNhap.hoTen}">
+        Xin chào
+    </span>
+    <a th:if="${session.khachHangDangNhap == null}" href="/dang-nhap">Đăng nhập</a>
+    <a th:if="${session.khachHangDangNhap == null}" class="client-nav-cta" href="/dang-ky">Đăng ký</a>
+    <a th:if="${session.khachHangDangNhap != null}" href="/tai-khoan">Tài khoản</a>
+    <a th:if="${session.khachHangDangNhap != null}" href="/dang-xuat" data-confirm-logout>Đăng xuất</a>
+
+    <dialog class="logout-dialog">
+        <form method="dialog" class="logout-dialog-box">
+            <h3>Xác nhận đăng xuất</h3>
+            <p>Bạn có chắc muốn đăng xuất không?</p>
+            <div class="actions right">
+                <button class="btn secondary" value="cancel">Hủy</button>
+                <a class="btn danger logout-confirm-link" href="/dang-xuat">Đăng xuất</a>
+            </div>
+        </form>
+    </dialog>
+    <script>
+        document.querySelectorAll('[data-confirm-logout]').forEach(function(link) {
+            link.addEventListener('click', function(event) {
+                var dialog = document.querySelector('.logout-dialog');
+                if (!dialog || typeof dialog.showModal !== 'function') {
+                    if (!confirm('Bạn có chắc muốn đăng xuất không?')) {
+                        event.preventDefault();
+                    }
+                    return;
+                }
+                event.preventDefault();
+                dialog.querySelector('.logout-confirm-link').setAttribute('href', link.getAttribute('href'));
+                dialog.showModal();
+            });
+        });
+    </script>
+</nav>
+
+<footer class="client-footer" th:fragment="footer">
+    <div>
+        <strong>Khách sạn Vip</strong>
+        <p>Không gian nghỉ dưỡng tiện nghi, đặt phòng nhanh và quản lý lịch đặt rõ ràng.</p>
+    </div>
+    <div>
+        <span>Hotline: 0909 123 456</span>
+        <span>Email: hello@khachsanvip.vn</span>
+    </div>
+</footer>
+</body>
+</html>

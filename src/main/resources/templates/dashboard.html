@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html lang="vi" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Dashboard</title>
+    <link rel="stylesheet" th:href="@{/css/app.css}">
+</head>
+<body>
+<div th:replace="~{fragments/nav :: nav}"></div>
+
+<div class="container">
+    <h1>Trang tổng quan</h1>
+
+    <div class="grid">
+        <div class="stat">
+            <h3>Nhân viên</h3>
+            <p th:text="${stats.soNhanVien()}">0</p>
+        </div>
+        <div class="stat">
+            <h3>Khách hàng</h3>
+            <p th:text="${stats.soKhachHang()}">0</p>
+        </div>
+        <div class="stat">
+            <h3>Phòng</h3>
+            <p th:text="${stats.soPhong()}">0</p>
+        </div>
+        <div class="stat">
+            <h3>Dịch vụ</h3>
+            <p th:text="${stats.soDichVu()}">0</p>
+        </div>
+        <div class="stat">
+            <h3>Đặt phòng</h3>
+            <p th:text="${stats.soDatPhong()}">0</p>
+        </div>
+        <div class="stat">
+            <h3>Hóa đơn</h3>
+            <p th:text="${stats.soHoaDon()}">0</p>
+        </div>
+        <div class="stat">
+            <h3>Tổng doanh thu</h3>
+            <p th:text="${stats.tongDoanhThu()}">0</p>
+        </div>
+    </div>
+</div>
+</body>
+</html>

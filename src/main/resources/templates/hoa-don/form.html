@@ -1,0 +1,109 @@
+<!DOCTYPE html>
+<html lang="vi" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Form hóa đơn</title>
+    <link rel="stylesheet" th:href="@{/css/app.css}">
+</head>
+<body>
+
+<div th:replace="~{fragments/nav :: nav}"></div>
+
+<div class="container">
+
+    <h1>Thông tin hóa đơn</h1>
+
+    <div class="alert" th:if="${error}" th:text="${error}"></div>
+    <div class="alert success" th:if="${message}" th:text="${message}"></div>
+
+    <div class="card">
+
+        <form method="post"
+              action="/admin/hoa-don/luu"
+              th:object="${item}">
+
+            <input type="hidden"
+                   th:field="*{maHoaDon}">
+
+            <div class="form-row">
+                <label>Ngày thu tiền</label>
+                <input type="date"
+                       name="ngayThuTien"
+                       th:value="${item.ngayThuTien != null ? item.ngayThuTien : today}"
+                       readonly>
+            </div>
+
+            <div class="form-row">
+                <label>Số tiền thu</label>
+                <input type="number"
+                       th:field="*{soTienThu}"
+                       readonly>
+                <small>Hệ thống tự tính = tiền phòng theo số ngày + tổng tiền dịch vụ.</small>
+            </div>
+
+            <div class="form-row">
+                <label>Chi tiết đặt phòng</label>
+
+                <input type="hidden"
+                       th:if="${lockBookingSelection}"
+                       th:field="*{ctDatPhong.maCtDatPhong}">
+
+                <select th:field="*{ctDatPhong.maCtDatPhong}"
+                        th:disabled="${lockBookingSelection}"
+                        required>
+
+                    <option value="">
+                        -- Chọn đặt phòng --
+                    </option>
+
+                    <option th:each="dp : ${datPhongs}"
+                            th:value="${dp.maCtDatPhong}"
+                            th:text="${'Mã ' + dp.maCtDatPhong + ' - Phòng ' + (dp.phong != null ? dp.phong.maPhong : '')}">
+                    </option>
+
+                </select>
+            </div>
+
+            <div class="form-row">
+                <label>Nhân viên thu tiền</label>
+
+                <select th:field="*{nhanVien.maNhanVien}"
+                        required>
+
+                    <option value="">
+                        -- Chọn nhân viên --
+                    </option>
+
+                    <option th:each="nv : ${nhanViens}"
+                            th:value="${nv.maNhanVien}"
+                            th:text="${nv.tenNhanVien}">
+                    </option>
+
+                </select>
+            </div>
+
+            <div class="form-row">
+                <label>Trạng thái</label>
+                <select th:field="*{trangThai}">
+                    <option value="CHUA_THANH_TOAN">Chưa thanh toán</option>
+                    <option value="DA_THANH_TOAN">Đã thanh toán</option>
+                </select>
+            </div>
+
+            <button class="btn" type="submit">
+                Lưu
+            </button>
+
+            <a class="btn secondary"
+               href="/admin/hoa-don">
+                Quay lại
+            </a>
+
+        </form>
+
+    </div>
+
+</div>
+
+</body>
+</html>

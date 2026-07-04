@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html lang="vi"
+      xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Đổi mật khẩu</title>
+    <link rel="stylesheet"
+          th:href="@{/css/app.css}">
+</head>
+<body>
+
+<div th:replace="~{fragments/nav :: nav}"></div>
+
+<div class="container">
+
+    <h1>Đổi mật khẩu</h1>
+
+    <div class="card">
+
+        <div class="alert" th:if="${error}" th:text="${error}"></div>
+        <div class="alert success" th:if="${success}" th:text="${success}"></div>
+
+        <form class="form-stack"
+              method="post"
+              action="/doi-mat-khau">
+
+            <div class="form-row">
+
+                <label>Mật khẩu cũ</label>
+
+                <input type="password"
+                       name="matKhauCu"
+                       required>
+
+            </div>
+
+            <div class="form-row">
+
+                <label>Mật khẩu mới</label>
+
+                <input type="password"
+                       name="matKhauMoi"
+                       required>
+
+            </div>
+
+            <div class="form-row">
+
+                <label>Xác nhận mật khẩu</label>
+
+                <input type="password"
+                       name="xacNhanMatKhau"
+                       required>
+
+            </div>
+
+            <button class="btn"
+                    type="submit">
+
+                Đổi mật khẩu
+
+            </button>
+
+        </form>
+
+    </div>
+
+</div>
+
+</body>
+</html>

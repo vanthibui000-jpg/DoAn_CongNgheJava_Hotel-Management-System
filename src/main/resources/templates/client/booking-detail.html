@@ -1,0 +1,109 @@
+<!DOCTYPE html>
+<html lang="vi" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Chi tiết đặt phòng</title>
+    <link rel="stylesheet" th:href="@{/css/app.css}">
+</head>
+<body class="client-page">
+<div th:replace="~{client/fragments :: nav}"></div>
+<main class="client-section">
+    <div class="section-heading">
+        <h1>Chi tiết đặt phòng #<span th:text="${datPhong.maCtDatPhong}"></span></h1>
+        <a href="/tai-khoan/lich-su-dat-phong">Quay lại lịch sử</a>
+    </div>
+    <div class="alert success" th:if="${message}" th:text="${message}"></div>
+    <div class="alert" th:if="${error}" th:text="${error}"></div>
+
+    <div class="booking-detail-grid">
+        <section class="client-card booking-detail-main">
+            <div class="detail-visual account-room-visual image-visual">
+                <img th:if="${datPhong.phong != null && datPhong.phong.hinhAnhDaiDienHienThi != null}"
+                     th:src="${datPhong.phong.hinhAnhDaiDienHienThi}"
+                     alt="Ảnh phòng">
+                <span th:if="${datPhong.phong == null || datPhong.phong.hinhAnhDaiDienHienThi == null}"
+                      th:text="${datPhong.phong != null ? datPhong.phong.maPhong : 'Phòng'}"></span>
+            </div>
+            <div>
+                <p class="eyebrow">Thông tin phòng</p>
+                <h2 th:text="${datPhong.phong != null ? 'Phòng ' + datPhong.phong.maPhong : 'Phòng'}"></h2>
+                <div class="detail-meta">
+                    <span>Loại phòng</span>
+                    <strong th:text="${datPhong.phong != null && datPhong.phong.loaiPhong != null ? datPhong.phong.loaiPhong.tenLoaiPhong : 'Đang cập nhật'}"></strong>
+                </div>
+                <div class="detail-meta">
+                    <span>Giá mỗi đêm</span>
+                    <strong th:text="${datPhong.phong != null && datPhong.phong.loaiPhong != null && datPhong.phong.loaiPhong.giaPhong != null ? #numbers.formatInteger(datPhong.phong.loaiPhong.giaPhong, 0, 'POINT') + ' VNĐ' : 'Đang cập nhật'}"></strong>
+                </div>
+                <div class="detail-meta">
+                    <span>Trạng thái</span>
+                    <strong><span class="status-badge" th:text="${datPhong.trangThaiHienThi}"></span></strong>
+                </div>
+            </div>
+        </section>
+
+        <aside class="client-card booking-detail-side">
+            <h2>Lịch lưu trú</h2>
+            <div class="account-info-list">
+                <div><span>Ngày đặt</span><strong th:text="${datPhong.ngayThucHien}"></strong></div>
+                <div><span>Ngày nhận</span><strong th:text="${datPhong.ngayNhan}"></strong></div>
+                <div><span>Ngày trả</span><strong th:text="${datPhong.ngayTra}"></strong></div>
+                <div><span>Số đêm</span><strong th:text="${datPhong.soDem}"></strong></div>
+            </div>
+        </aside>
+    </div>
+
+    <section class="client-card">
+        <div class="section-heading">
+            <h2>Dịch vụ đã sử dụng</h2>
+        </div>
+        <table class="table">
+            <thead>
+            <tr>
+                <th>Tên dịch vụ</th>
+                <th>Số lượng</th>
+                <th>Đơn giá</th>
+                <th>Thành tiền</th>
+            </tr>
+            </thead>
+            <tbody>
+            <tr th:each="dv : ${dichVuDaDung}">
+                <td th:text="${dv.dichVu != null ? dv.dichVu.tenDichVuHienThi : ''}"></td>
+                <td th:text="${dv.soLuong}"></td>
+                <td th:text="${dv.dichVu != null && dv.dichVu.giaDichVu != null ? #numbers.formatInteger(dv.dichVu.giaDichVu, 0, 'POINT') + ' VNĐ' : ''}"></td>
+                <td class="price-cell" th:text="${dv.tongTienDichVu != null ? #numbers.formatInteger(dv.tongTienDichVu, 0, 'POINT') + ' VNĐ' : ''}"></td>
+            </tr>
+            <tr th:if="${#lists.isEmpty(dichVuDaDung)}">
+                <td colspan="4" class="empty-row">Đơn này chưa sử dụng dịch vụ thêm.</td>
+            </tr>
+            </tbody>
+        </table>
+    </section>
+
+    <section class="client-card total-card">
+        <div class="section-heading">
+            <h2>Tổng thanh toán</h2>
+            <div class="table-actions">
+                <a class="btn" th:if="${coTheThanhToan}" th:href="@{/tai-khoan/thanh-toan/{id}(id=${datPhong.maCtDatPhong})}">Thanh toán online</a>
+                <a class="btn secondary" th:if="${coTheInHoaDon}" th:href="@{/tai-khoan/hoa-don/{id}(id=${datPhong.maCtDatPhong})}">Xuất hóa đơn</a>
+                <form method="post"
+                      th:if="${coTheHuy}"
+                      th:action="@{/tai-khoan/lich-su-dat-phong/huy/{id}(id=${datPhong.maCtDatPhong})}"
+                      onsubmit="return confirm('Bạn có chắc muốn hủy đơn đặt phòng này?')"
+                      style="display:inline">
+                    <button class="btn danger" type="submit">Hủy phòng</button>
+                </form>
+            </div>
+        </div>
+        <table class="table compact-table total-table">
+            <tbody>
+            <tr><th>Tiền phòng</th><td th:text="${#numbers.formatInteger(tienPhong, 0, 'POINT') + ' VNĐ'}"></td></tr>
+            <tr><th>Tiền dịch vụ</th><td th:text="${#numbers.formatInteger(tongTienDichVu, 0, 'POINT') + ' VNĐ'}"></td></tr>
+            <tr class="total-row"><th>Tổng cộng</th><td th:text="${#numbers.formatInteger(tongCong, 0, 'POINT') + ' VNĐ'}"></td></tr>
+            </tbody>
+        </table>
+    </section>
+</main>
+<div th:replace="~{client/fragments :: footer}"></div>
+</body>
+</html>

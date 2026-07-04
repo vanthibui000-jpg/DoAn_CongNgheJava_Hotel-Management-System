@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html lang="vi" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Đánh giá</title>
+    <link rel="stylesheet" th:href="@{/css/app.css}">
+</head>
+<body class="client-page">
+<div th:replace="~{client/fragments :: nav}"></div>
+<main class="client-section">
+    <div class="client-card">
+        <h1>Đánh giá khách hàng</h1>
+        <div class="alert" th:if="${error}" th:text="${error}"></div>
+        <div class="alert" th:if="${session.khachHangDangNhap == null}">
+            Bạn cần đăng nhập để gửi đánh giá.
+        </div>
+        <div class="alert" th:if="${session.khachHangDangNhap != null and #lists.isEmpty(phongs)}">
+            Bạn chưa có phòng nào đủ điều kiện đánh giá. Khách hàng chỉ có thể đánh giá khi đơn đã thanh toán hoặc đã trả phòng.
+        </div>
+        <form method="post" action="/danh-gia" class="review-form"
+              th:if="${session.khachHangDangNhap != null and phongs != null and not #lists.isEmpty(phongs)}">
+            <select name="maPhong" required>
+                <option value="">-- Chọn phòng đã trả --</option>
+                <option th:each="p : ${phongs}" th:value="${p.maPhong}" th:text="'Phòng ' + ${p.maPhong}"></option>
+            </select>
+            <select name="soSao" required>
+                <option value="5">5 sao</option>
+                <option value="4">4 sao</option>
+                <option value="3">3 sao</option>
+                <option value="2">2 sao</option>
+                <option value="1">1 sao</option>
+            </select>
+            <textarea name="noiDung" rows="3" maxlength="255" placeholder="Nội dung đánh giá" required></textarea>
+            <button class="btn" type="submit">Gửi đánh giá</button>
+        </form>
+        <div class="review-list">
+            <article th:each="item : ${items}">
+                <strong th:text="${item.phong != null ? 'Phòng ' + item.phong.maPhong : 'Đánh giá'}"></strong>
+                <span th:text="${item.soSao != null ? item.soSao + ' sao' : '5 sao'}"></span>
+                <p th:text="${item.khachHang != null ? item.khachHang.hoTen + ': ' + item.noiDung : item.noiDung}"></p>
+            </article>
+        </div>
+    </div>
+</main>
+<div th:replace="~{client/fragments :: footer}"></div>
+</body>
+</html>

@@ -1,0 +1,92 @@
+<!DOCTYPE html>
+<html lang="vi" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Quản lý phân công</title>
+    <link rel="stylesheet" th:href="@{/css/app.css}">
+</head>
+<body>
+<div th:replace="~{fragments/nav :: nav}"></div>
+
+<div class="container admin-wide">
+    <h1>Quản lý phân công công việc</h1>
+
+    <div class="card admin-panel">
+        <div class="admin-toolbar">
+            <form class="toolbar-filter assignment-filter" method="get" action="/admin/phan-cong">
+                <div class="form-row">
+                    <label>Loại công việc</label>
+                    <input type="text"
+                           name="keyword"
+                           placeholder="Nhập loại công việc..."
+                           th:value="${keyword}">
+                </div>
+
+                <div class="form-row">
+                    <label>Ngày phân công</label>
+                    <input type="date"
+                           name="ngay"
+                           th:value="${ngay}">
+                </div>
+
+                <div class="filter-actions">
+                    <button type="submit" class="btn">
+                        <i class="fa-solid fa-magnifying-glass"></i>
+                        Tìm kiếm
+                    </button>
+                    <a href="/admin/phan-cong" class="btn secondary">
+                        <i class="fa-solid fa-rotate-right"></i>
+                        Làm mới
+                    </a>
+                    <a href="/admin/phan-cong/hom-nay" class="btn secondary">
+                        <i class="fa-solid fa-calendar-day"></i>
+                        Hôm nay
+                    </a>
+                </div>
+            </form>
+
+            <a class="btn" href="/admin/phan-cong/them">
+                <i class="fa-solid fa-plus"></i>
+                Thêm phân công
+            </a>
+        </div>
+
+        <table class="table admin-table">
+            <thead>
+            <tr>
+                <th>Mã phân công</th>
+                <th>Ngày phân công</th>
+                <th>Loại công việc</th>
+                <th>Nhân viên</th>
+                <th>Thao tác</th>
+            </tr>
+            </thead>
+
+            <tbody>
+            <tr th:if="${#lists.isEmpty(items)}">
+                <td colspan="5" class="empty-row">Không có dữ liệu</td>
+            </tr>
+
+            <tr th:each="item : ${items}">
+                <td><span class="id-badge" th:text="${item.maPhanCong}">1</span></td>
+                <td th:text="${item.ngayPhanCong}">2026-06-01</td>
+                <td th:text="${item.loaiCongViec}">Dọn phòng</td>
+                <td th:text="${item.nhanVien != null ? item.nhanVien.tenNhanVien : ''}">Nguyễn Văn A</td>
+                <td class="table-actions">
+                    <a class="btn small secondary"
+                       th:href="@{/admin/phan-cong/sua/{id}(id=${item.maPhanCong})}">
+                        Sửa
+                    </a>
+                    <a class="btn small danger"
+                       th:href="@{/admin/phan-cong/xoa/{id}(id=${item.maPhanCong})}"
+                       onclick="return confirm('Bạn có chắc muốn xóa phân công này?')">
+                        Xóa
+                    </a>
+                </td>
+            </tr>
+            </tbody>
+        </table>
+    </div>
+</div>
+</body>
+</html>

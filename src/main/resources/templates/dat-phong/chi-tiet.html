@@ -1,0 +1,122 @@
+<!DOCTYPE html>
+<html lang="vi" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Chi tiết đặt phòng</title>
+    <link rel="stylesheet" th:href="@{/css/app.css}">
+</head>
+<body>
+<div th:replace="~{fragments/nav :: nav}"></div>
+<div class="container">
+    <h1>Chi tiết đơn đặt phòng #<span th:text="${datPhong.maCtDatPhong}"></span></h1>
+    <div class="alert success" th:if="${message}" th:text="${message}"></div>
+    <div class="alert" th:if="${error}" th:text="${error}"></div>
+
+    <div class="card">
+        <h2>Thông tin khách hàng</h2>
+        <table class="table compact-table">
+            <tbody>
+            <tr>
+                <th>Họ tên</th>
+                <td th:text="${datPhong.khachHang != null ? datPhong.khachHang.hoTen : ''}"></td>
+                <th>Điện thoại</th>
+                <td th:text="${datPhong.khachHang != null ? datPhong.khachHang.dienThoai : ''}"></td>
+            </tr>
+            <tr>
+                <th>CMND/CCCD</th>
+                <td th:text="${datPhong.khachHang != null ? datPhong.khachHang.cmnd : ''}"></td>
+                <th>Email</th>
+                <td th:text="${datPhong.khachHang != null ? datPhong.khachHang.email : ''}"></td>
+            </tr>
+            <tr>
+                <th>Địa chỉ</th>
+                <td colspan="3" th:text="${datPhong.khachHang != null ? datPhong.khachHang.diaChi : ''}"></td>
+            </tr>
+            </tbody>
+        </table>
+        <a class="btn small" th:if="${datPhong.khachHang != null}"
+           th:href="@{/admin/khach-hang/lich-su/{id}(id=${datPhong.khachHang.maKhachHang})}">Xem lịch sử đặt phòng</a>
+    </div>
+
+    <div class="card">
+        <h2>Thông tin phòng</h2>
+        <table class="table compact-table">
+            <tbody>
+            <tr>
+                <th>Số phòng</th>
+                <td th:text="${datPhong.phong != null ? datPhong.phong.maPhong : ''}"></td>
+                <th>Loại phòng</th>
+                <td th:text="${datPhong.phong != null && datPhong.phong.loaiPhong != null ? datPhong.phong.loaiPhong.tenLoaiPhong : ''}"></td>
+            </tr>
+            <tr>
+                <th>Giá/đêm</th>
+                <td th:text="${datPhong.phong != null && datPhong.phong.loaiPhong != null && datPhong.phong.loaiPhong.giaPhong != null ? #numbers.formatInteger(datPhong.phong.loaiPhong.giaPhong, 0, 'POINT') + ' VNĐ' : ''}"></td>
+                <th>Số đêm</th>
+                <td th:text="${soDem}"></td>
+            </tr>
+            <tr>
+                <th>Ngày nhận</th>
+                <td th:text="${datPhong.ngayNhan}"></td>
+                <th>Ngày trả</th>
+                <td th:text="${datPhong.ngayTra}"></td>
+            </tr>
+            <tr>
+                <th>Trạng thái</th>
+                <td colspan="3"><span class="status-badge" th:text="${datPhong.trangThaiHienThi}"></span></td>
+            </tr>
+            </tbody>
+        </table>
+    </div>
+
+    <div class="card">
+        <div class="section-heading">
+            <h2>Dịch vụ đã sử dụng</h2>
+            <a class="btn small service-add-btn" th:href="@{/admin/ct-dich-vu/them-vao-don(maCtDatPhong=${datPhong.maCtDatPhong})}">+ Thêm dịch vụ</a>
+        </div>
+        <table class="table">
+            <thead>
+            <tr>
+                <th>Tên dịch vụ</th>
+                <th>Số lượng</th>
+                <th>Đơn giá</th>
+                <th>Thành tiền</th>
+                <th>Thao tác</th>
+            </tr>
+            </thead>
+            <tbody>
+            <tr th:each="dv : ${dichVuDaDung}">
+                <td th:text="${dv.dichVu != null ? dv.dichVu.tenDichVuHienThi : ''}"></td>
+                <td th:text="${dv.soLuong}"></td>
+                <td th:text="${dv.dichVu != null && dv.dichVu.giaDichVu != null ? #numbers.formatInteger(dv.dichVu.giaDichVu, 0, 'POINT') + ' VNĐ' : ''}"></td>
+                <td th:text="${dv.tongTienDichVu != null ? #numbers.formatInteger(dv.tongTienDichVu, 0, 'POINT') + ' VNĐ' : ''}"></td>
+                <td>
+                    <a class="btn small danger"
+                       th:href="@{/admin/ct-dich-vu/xoa(maDichVu=${dv.dichVu.maDichVu}, maCtDatPhong=${dv.ctDatPhong.maCtDatPhong}, back='chi-tiet')}"
+                       onclick="return confirm('Xóa dịch vụ này?')">Xóa</a>
+                </td>
+            </tr>
+            <tr th:if="${#lists.isEmpty(dichVuDaDung)}"><td colspan="5" class="empty-row">Chưa có dịch vụ nào</td></tr>
+            </tbody>
+        </table>
+    </div>
+
+    <div class="card total-card">
+        <h2>Tổng thanh toán</h2>
+        <table class="table compact-table total-table">
+            <tbody>
+            <tr><th>Tiền phòng</th><td th:text="${#numbers.formatInteger(tienPhong, 0, 'POINT') + ' VNĐ'}"></td></tr>
+            <tr><th>Tiền dịch vụ</th><td th:text="${#numbers.formatInteger(tongTienDichVu, 0, 'POINT') + ' VNĐ'}"></td></tr>
+            <tr class="total-row"><th>Tổng cộng</th><td th:text="${#numbers.formatInteger(tongCong, 0, 'POINT') + ' VNĐ'}"></td></tr>
+            </tbody>
+        </table>
+    </div>
+
+    <div class="actions">
+        <a class="btn" href="/admin/dat-phong">Quay lại danh sách</a>
+        <a class="btn secondary" th:href="@{/admin/dat-phong/sua/{id}(id=${datPhong.maCtDatPhong})}">Sửa đơn</a>
+        <a class="btn" th:href="@{/admin/hoa-don/tao-tu-don/{id}(id=${datPhong.maCtDatPhong})}">Tạo hóa đơn từ đơn này</a>
+    </div>
+</div>
+
+</body>
+</html>

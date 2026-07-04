@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html lang="vi" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Danh sách phòng</title>
+    <link rel="stylesheet" th:href="@{/css/app.css}">
+</head>
+<body class="client-page">
+<div th:replace="~{client/fragments :: nav}"></div>
+<main class="client-section">
+    <div class="section-heading">
+        <h1>Danh sách phòng</h1>
+    </div>
+    <form class="filter-panel client-search-panel" method="get" action="/phong">
+        <div class="filter-grid">
+            <div class="filter-field">
+                <label>Ngày nhận</label>
+                <input id="filterNgayNhan" type="date" name="ngayNhan" th:value="${ngayNhan}" th:min="${today}">
+            </div>
+            <div class="filter-field">
+                <label>Ngày trả</label>
+                <input id="filterNgayTra" type="date" name="ngayTra" th:value="${ngayTra}" th:min="${today}">
+            </div>
+        </div>
+        <div class="filter-actions">
+            <button class="btn" type="submit">Tìm phòng trống</button>
+            <a class="btn secondary" href="/phong">Làm mới</a>
+        </div>
+    </form>
+    <div class="alert" th:if="${dateError}" th:text="${dateError}"></div>
+    <div class="room-card-grid">
+        <article class="client-card room-card" th:each="phong : ${phongs}">
+            <div class="room-visual image-visual">
+                <img th:if="${phong.hinhAnhDaiDienHienThi != null}" th:src="${phong.hinhAnhDaiDienHienThi}" alt="Anh phong">
+                <span th:if="${phong.hinhAnhDaiDienHienThi == null}" th:text="${phong.maPhong}"></span>
+            </div>
+            <div class="room-card-body">
+                <h3 th:text="'Phòng ' + ${phong.maPhong}"></h3>
+                <p th:text="${phong.loaiPhong != null ? phong.loaiPhong.tenLoaiPhong : 'Chưa có loại phòng'}"></p>
+                <strong th:text="${phong.loaiPhong != null && phong.loaiPhong.giaPhong != null ? #numbers.formatInteger(phong.loaiPhong.giaPhong, 0, 'POINT') : ''}"></strong>
+                <span class="status-badge" th:text="${phong.trangThai != null ? phong.trangThai : 'Trống'}"></span>
+                <div class="card-actions">
+                    <a class="btn small" th:href="@{/phong/{id}(id=${phong.maPhong})}">Chi tiết</a>
+                    <a class="btn small secondary"
+                       th:if="${phong.trangThai != 'Bảo trì'}"
+                       th:href="@{/dat-phong(maPhong=${phong.maPhong},ngayNhan=${ngayNhan},ngayTra=${ngayTra})}">Đặt phòng</a>
+                    <span class="btn small secondary disabled" th:if="${phong.trangThai == 'Bảo trì'}">Bảo trì</span>
+                </div>
+            </div>
+        </article>
+    </div>
+    <p class="empty-row" th:if="${#lists.isEmpty(phongs)}">Không có phòng phù hợp trong khoảng ngày này.</p>
+    <div th:replace="~{fragments/pagination :: pagination}"></div>
+</main>
+<script>
+    const filterCheckIn = document.getElementById('filterNgayNhan');
+    const filterCheckOut = document.getElementById('filterNgayTra');
+
+    function updateFilterCheckoutMin() {
+        if (!filterCheckIn || !filterCheckOut || !filterCheckIn.value) {
+            return;
+        }
+        const nextDate = new Date(filterCheckIn.value);
+        nextDate.setDate(nextDate.getDate() + 1);
+        filterCheckOut.min = nextDate.toISOString().slice(0, 10);
+        if (filterCheckOut.value && filterCheckOut.value <= filterCheckIn.value) {
+            filterCheckOut.value = filterCheckOut.min;
+        }
+    }
+
+    if (filterCheckIn && filterCheckOut) {
+        filterCheckIn.addEventListener('change', updateFilterCheckoutMin);
+        updateFilterCheckoutMin();
+    }
+</script>
+<div th:replace="~{client/fragments :: footer}"></div>
+</body>
+</html>

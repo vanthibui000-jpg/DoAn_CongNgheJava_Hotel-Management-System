@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html lang="vi" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Đánh giá</title>
+    <link rel="stylesheet" th:href="@{/css/app.css}">
+</head>
+<body>
+<div th:replace="~{fragments/nav :: nav}"></div>
+<div class="container">
+
+    <h1>Quản lý đánh giá</h1>
+    <div class="card">
+        <a class="btn" href="/admin/danh-gia/them">+ Thêm đánh giá</a>
+        <table class="table" style="margin-top:14px">
+            <thead>
+            <tr>
+                <th>ID</th>
+                <th>Nội dung</th>
+                <th>Ngày đánh giá</th>
+                <th>Phòng</th>
+                <th>Khách hàng</th>
+                <th>Số sao</th>
+                <th>Thao tác</th>
+            </tr>
+            </thead>
+            <tbody>
+            <tr th:each="item : ${items}">
+                <td th:text="${item.id}"></td>
+                <td th:text="${item.noiDung}"></td>
+                <td th:text="${item.ngayDanhGia}"></td>
+                <td th:text="${item.phong != null ? item.phong.maPhong : ''}"></td>
+                <td th:text="${item.khachHang != null ? item.khachHang.hoTen : ''}"></td>
+                <td th:text="${item.soSao != null ? item.soSao : 5}"></td>
+                <td>
+                    <a class="btn small secondary" th:href="@{/admin/danh-gia/sua/{id}(id=${item.id})}">Sửa</a>
+                    <a class="btn small danger" th:href="@{/admin/danh-gia/xoa/{id}(id=${item.id})}"
+                       onclick="return confirm('Xóa đánh giá này?')">Xóa</a>
+                </td>
+            </tr>
+            </tbody>
+        </table>
+    </div>
+</div>
+</body>
+</html>

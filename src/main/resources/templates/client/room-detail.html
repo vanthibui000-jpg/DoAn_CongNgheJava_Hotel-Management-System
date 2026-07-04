@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html lang="vi" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Chi tiết phòng</title>
+    <link rel="stylesheet" th:href="@{/css/app.css}">
+</head>
+<body class="client-page">
+<div th:replace="~{client/fragments :: nav}"></div>
+<main class="client-section">
+    <div class="room-detail">
+        <div class="room-visual detail-visual image-visual">
+            <img id="roomMainImage"
+                 th:if="${phong.hinhAnhDaiDienHienThi != null}"
+                 th:src="${phong.hinhAnhDaiDienHienThi}"
+                 alt="Anh phong">
+            <span th:if="${phong.hinhAnhDaiDienHienThi == null}" th:text="${phong.maPhong}"></span>
+        </div>
+        <div class="client-card room-detail-info">
+            <p class="eyebrow" th:text="${phong.loaiPhong != null ? phong.loaiPhong.tenLoaiPhong : 'Phòng khách sạn'}"></p>
+            <h1 th:text="'Phòng ' + ${phong.maPhong}"></h1>
+            <p th:text="${phong.loaiPhong != null ? phong.loaiPhong.moTa : 'Phòng nghỉ tiện nghi, phù hợp cho chuyến đi ngắn ngày.'}"></p>
+            <div class="detail-meta">
+                <span>Giá</span>
+                <strong th:text="${phong.loaiPhong != null && phong.loaiPhong.giaPhong != null ? #numbers.formatInteger(phong.loaiPhong.giaPhong, 0, 'POINT') : ''}"></strong>
+            </div>
+            <div class="detail-meta">
+                <span>Trạng thái</span>
+                <strong th:text="${phong.trangThai != null ? phong.trangThai : 'Trống'}"></strong>
+            </div>
+            <a class="btn"
+               th:if="${phong.trangThai != 'Bảo trì'}"
+               th:href="@{/dat-phong(maPhong=${phong.maPhong})}">Đặt phòng này</a>
+            <span class="btn disabled" th:if="${phong.trangThai == 'Bảo trì'}">Phòng đang bảo trì</span>
+            <div class="room-gallery" th:if="${!#lists.isEmpty(roomGallery)}">
+                <button class="gallery-thumb"
+                        type="button"
+                        th:each="imageUrl, stat : ${roomGallery}"
+                        th:classappend="${stat.index == 0} ? ' active' : ''"
+                        th:attr="data-image-url=${imageUrl}">
+                    <img th:src="${imageUrl}" alt="Anh chi tiet phong">
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <section class="client-card">
+        <h2>Đánh giá</h2>
+        <p th:if="${#lists.isEmpty(danhGias)}">Chưa có đánh giá cho phòng này.</p>
+        <div class="review-list">
+            <article th:each="dg : ${danhGias}">
+                <strong th:text="${dg.ngayDanhGia}"></strong>
+                <span th:text="${dg.soSao != null ? dg.soSao + ' sao' : '5 sao'}"></span>
+                <p th:text="${dg.khachHang != null ? dg.khachHang.hoTen + ': ' + dg.noiDung : dg.noiDung}"></p>
+            </article>
+        </div>
+    </section>
+</main>
+<script>
+    const roomMainImage = document.getElementById('roomMainImage');
+    const galleryThumbs = document.querySelectorAll('.gallery-thumb');
+
+    galleryThumbs.forEach((thumb) => {
+        thumb.addEventListener('click', () => {
+            const imageUrl = thumb.dataset.imageUrl;
+            if (!roomMainImage || !imageUrl) {
+                return;
+            }
+            roomMainImage.src = imageUrl;
+            galleryThumbs.forEach((item) => item.classList.remove('active'));
+            thumb.classList.add('active');
+        });
+    });
+</script>
+<div th:replace="~{client/fragments :: footer}"></div>
+</body>
+</html>

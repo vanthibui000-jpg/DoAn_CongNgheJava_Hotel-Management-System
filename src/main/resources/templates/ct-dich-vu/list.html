@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html lang="vi" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Chi tiết dịch vụ</title>
+    <link rel="stylesheet" th:href="@{/css/app.css}">
+</head>
+<body>
+<div th:replace="~{fragments/nav :: nav}"></div>
+<div class="container">
+
+    <h1>Chi tiết sử dụng dịch vụ</h1>
+    <div class="card">
+        <a class="btn" href="/admin/ct-dich-vu/them">+ Thêm chi tiết dịch vụ</a>
+        <table class="table" style="margin-top:14px">
+            <thead>
+            <tr>
+                <th>Mã CTDV</th>
+                <th>Dịch vụ</th>
+                <th>Mã đặt phòng</th>
+                <th>Số lượng</th>
+                <th>Tổng tiền</th>
+                <th>Thao tác</th>
+            </tr>
+            </thead>
+            <tbody>
+            <tr th:each="item : ${items}">
+                <td th:text="${item.maCtDichVu}"></td>
+                <td th:text="${item.dichVu != null ? item.dichVu.tenDichVu : ''}"></td>
+                <td th:text="${item.ctDatPhong != null ? item.ctDatPhong.maCtDatPhong : ''}"></td>
+                <td th:text="${item.soLuong}"></td>
+                <td th:text="${item.tongTienDichVu}"></td>
+                <td>
+                    <a class="btn small danger"
+                       th:href="@{/admin/ct-dich-vu/xoa(maDichVu=${item.dichVu.maDichVu}, maCtDatPhong=${item.ctDatPhong.maCtDatPhong})}"
+                       onclick="return confirm('Xóa chi tiết dịch vụ này?')">Xóa</a>
+                </td>
+            </tr>
+            </tbody>
+        </table>
+    </div>
+</div>
+</body>
+</html>

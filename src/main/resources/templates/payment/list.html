@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html lang="vi" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Đặt phòng / Thanh toán</title>
+    <link rel="stylesheet" th:href="@{/css/app.css}">
+</head>
+<body>
+<div th:replace="~{fragments/nav :: nav}"></div>
+<div class="container">
+    <h1>Đặt phòng / Thanh toán</h1>
+    <div class="alert success" th:if="${message}" th:text="${message}"></div>
+    <div class="alert" th:if="${error}" th:text="${error}"></div>
+
+    <div class="card">
+        <div class="actions">
+            <a class="btn" href="/admin/thanh-toan?status=all">Tất cả</a>
+            <a class="btn secondary" href="/admin/dat-phong">Đơn chờ duyệt</a>
+            <a class="btn secondary" href="/admin/thanh-toan?status=CHO_THANH_TOAN">Chờ thanh toán</a>
+            <a class="btn secondary" href="/admin/thanh-toan?status=CHO_XAC_NHAN">Chờ xác nhận</a>
+            <a class="btn secondary" href="/admin/thanh-toan?status=HET_HAN">Quá hạn</a>
+            <a class="btn secondary" href="/admin/thanh-toan?status=DA_THANH_TOAN">Đã thanh toán</a>
+            <a class="btn secondary" href="/admin/thanh-toan?status=DA_HUY">Đã hủy</a>
+        </div>
+
+        <table class="table" style="margin-top:14px">
+            <thead>
+            <tr>
+                <th>Mã đặt phòng</th>
+                <th>Tên khách hàng</th>
+                <th>Phòng</th>
+                <th>Tổng tiền</th>
+                <th>Nội dung CK</th>
+                <th>Trạng thái booking</th>
+                <th>Trạng thái thanh toán</th>
+                <th>Hạn thanh toán</th>
+                <th>Thao tác</th>
+            </tr>
+            </thead>
+            <tbody>
+            <tr th:each="item : ${items}">
+                <td th:text="${item.booking != null ? item.booking.maCtDatPhong : ''}"></td>
+                <td th:text="${item.booking != null && item.booking.khachHang != null ? item.booking.khachHang.hoTen : ''}"></td>
+                <td th:text="${item.booking != null && item.booking.phong != null ? item.booking.phong.maPhong : ''}"></td>
+                <td class="price-cell" th:text="${item.amount != null ? #numbers.formatDecimal(item.amount, 0, 'POINT', 0, 'COMMA') + ' VNĐ' : ''}"></td>
+                <td><span class="code-badge" th:text="${item.transferContent}"></span></td>
+                <td><span class="status-badge warning" th:text="${item.booking != null ? item.booking.trangThaiHienThi : ''}"></span></td>
+                <td>
+                    <span class="status-badge"
+                          th:classappend="${item.status == 'DA_THANH_TOAN' ? ' success' : (item.status == 'DA_HUY' or item.status == 'HET_HAN' ? ' danger' : ' warning')}"
+                          th:text="${item.statusHienThi}"></span>
+                </td>
+                <td th:text="${item.expiredAt}"></td>
+                <td class="table-actions">
+                    <a class="btn small secondary" th:if="${item.qrUrl != null}" th:href="${item.qrUrl}" target="_blank">Mở QR</a>
+                    <form method="post"
+                          th:if="${item.status == 'CHO_XAC_NHAN'}"
+                          th:action="@{/admin/thanh-toan/xac-nhan-tien/{bookingId}(bookingId=${item.booking.maCtDatPhong})}"
+                          style="display:inline">
+                        <button class="btn small" type="submit">Xác nhận đã nhận tiền</button>
+                    </form>
+                    <form method="post"
+                          th:if="${item.status == 'HET_HAN' or (item.booking != null and item.booking.trangThai == 'QUA_HAN_THANH_TOAN')}"
+                          th:action="@{/admin/thanh-toan/huy-qua-han/{bookingId}(bookingId=${item.booking.maCtDatPhong})}"
+                          onsubmit="return confirm('Hủy đơn quá hạn này?')"
+                          style="display:inline">
+                        <button class="btn small danger" type="submit">Hủy đặt phòng</button>
+                    </form>
+                    <a class="btn small"
+                       th:if="${item.status == 'DA_THANH_TOAN'}"
+                       th:href="@{/admin/thanh-toan/hoa-don/{bookingId}(bookingId=${item.booking.maCtDatPhong})}">In hóa đơn</a>
+                </td>
+            </tr>
+            <tr th:if="${#lists.isEmpty(items)}">
+                <td colspan="9" class="empty-row">Không có thanh toán nào.</td>
+            </tr>
+            </tbody>
+        </table>
+    </div>
+</div>
+</body>
+</html>

@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html lang="vi" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Thanh toán VietQR</title>
+    <link rel="stylesheet" th:href="@{/css/app.css}">
+</head>
+<body class="client-page">
+<div th:replace="~{client/fragments :: nav}"></div>
+<main class="client-section">
+    <div class="section-heading">
+        <h1>Thanh toán VietQR</h1>
+        <a th:href="@{/tai-khoan/lich-su-dat-phong/{id}(id=${datPhong.maCtDatPhong})}">Quay lại đơn đặt phòng</a>
+    </div>
+
+    <div class="booking-detail-grid">
+        <section class="client-card">
+            <p class="eyebrow">Đơn đặt phòng</p>
+            <h2>#<span th:text="${datPhong.maCtDatPhong}"></span></h2>
+            <div class="account-info-list">
+                <div><span>Phòng</span><strong th:text="${datPhong.phong != null ? datPhong.phong.maPhong : ''}"></strong></div>
+                <div><span>Ngày nhận</span><strong th:text="${datPhong.ngayNhan}"></strong></div>
+                <div><span>Ngày trả</span><strong th:text="${datPhong.ngayTra}"></strong></div>
+                <div><span>Số đêm</span><strong th:text="${datPhong.soDem}"></strong></div>
+                <div><span>Trạng thái đặt phòng</span><strong><span class="status-badge" th:text="${datPhong.trangThaiHienThi}"></span></strong></div>
+                <div><span>Trạng thái thanh toán</span><strong><span class="status-badge warning" th:text="${payment.statusHienThi}"></span></strong></div>
+            </div>
+        </section>
+
+        <aside class="client-card vietqr-card">
+            <p class="eyebrow">Quét mã để chuyển khoản</p>
+            <img class="vietqr-image"
+                 th:if="${payment.qrUrl != null}"
+                 th:src="${payment.qrUrl}"
+                 alt="VietQR">
+            <a class="muted-text" th:if="${payment.qrUrl != null}" th:href="${payment.qrUrl}" target="_blank" th:text="${payment.qrUrl}"></a>
+            <p class="alert" th:if="${payment.qrUrl == null}">Không tạo được ảnh QR. Vui lòng liên hệ admin.</p>
+        </aside>
+    </div>
+
+    <section class="client-card">
+        <h2>Thông tin chuyển khoản</h2>
+        <table class="table compact-table total-table">
+            <tbody>
+            <tr><th>Số tiền</th><td class="price-cell" th:text="${#numbers.formatInteger(tongCong, 0, 'POINT') + ' VNĐ'}"></td></tr>
+            <tr><th>Nội dung</th><td><span class="code-badge" th:text="${payment.transferContent}"></span></td></tr>
+            <tr><th>Hạn thanh toán</th><td th:text="${payment.expiredAt}"></td></tr>
+            <tr><th>Phương thức</th><td th:text="${payment.method}"></td></tr>
+            </tbody>
+        </table>
+        <form method="post" th:action="@{/tai-khoan/thanh-toan/{id}(id=${datPhong.maCtDatPhong})}" class="form-stack">
+            <button class="btn" type="submit">Tôi đã chuyển khoản</button>
+            <small>Hệ thống chỉ chuyển sang trạng thái chờ xác nhận. Admin sẽ kiểm tra giao dịch và xác nhận thanh toán.</small>
+        </form>
+    </section>
+</main>
+<div th:replace="~{client/fragments :: footer}"></div>
+</body>
+</html>

@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html lang="vi" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Form chi tiết dịch vụ</title>
+    <link rel="stylesheet" th:href="@{/css/app.css}">
+</head>
+<body>
+<div th:replace="~{fragments/nav :: nav}"></div>
+<div class="container">
+
+    <h1>Thông tin chi tiết dịch vụ</h1>
+    <div class="alert" th:if="${error}" th:text="${error}"></div>
+
+    <div class="card">
+        <form method="post" action="/admin/ct-dich-vu/luu" th:object="${item}">
+            <div class="form-row">
+                <label>Mã CT dịch vụ</label>
+                <input type="number" th:field="*{maCtDichVu}" required>
+            </div>
+            <div class="form-row">
+                <label>Dịch vụ</label>
+                <select th:field="*{dichVu.maDichVu}" required>
+                    <option value="">-- Chọn dịch vụ --</option>
+                    <option th:each="dv : ${dichVus}"
+                            th:value="${dv.maDichVu}"
+                            th:text="${dv.tenDichVuHienThi + ' - ' + #numbers.formatInteger(dv.giaDichVu, 0, 'POINT') + ' VNĐ'}">
+                    </option>
+                </select>
+            </div>
+            <div class="form-row">
+                <label>Đặt phòng</label>
+                <select th:field="*{ctDatPhong.maCtDatPhong}" required>
+                    <option value="">-- Chọn đặt phòng --</option>
+                    <option th:each="dp : ${datPhongs}"
+                            th:value="${dp.maCtDatPhong}"
+                            th:text="${'Mã ' + dp.maCtDatPhong + (dp.phong != null ? ' - Phòng ' + dp.phong.maPhong : '')}">
+                    </option>
+                </select>
+            </div>
+            <div class="form-row">
+                <label>Số lượng</label>
+                <input type="number" th:field="*{soLuong}" min="1" required>
+            </div>
+            <div class="form-row">
+                <label>Tổng tiền dịch vụ</label>
+                <input type="number" th:field="*{tongTienDichVu}" readonly>
+            </div>
+            <button class="btn" type="submit">Lưu</button>
+            <a class="btn secondary" href="/admin/ct-dich-vu">Quay lại</a>
+        </form>
+    </div>
+</div>
+</body>
+</html>

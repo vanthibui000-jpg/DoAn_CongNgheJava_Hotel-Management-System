@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html lang="vi" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Form nhân viên</title>
+    <link rel="stylesheet" th:href="@{/css/app.css}">
+</head>
+<body>
+<div th:replace="~{fragments/nav :: nav}"></div>
+<div class="container">
+
+    <h1 th:text="${item.maNhanVien == null ? 'Thêm nhân viên' : 'Sửa nhân viên'}"></h1>
+    <div class="alert" th:if="${error}" th:text="${error}"></div>
+
+    <div class="card">
+        <form method="post" action="/admin/nhan-vien/luu" th:object="${item}">
+            <input type="hidden" th:field="*{maNhanVien}">
+
+            <div class="form-row">
+                <label>Tài khoản</label>
+                <input type="text" th:field="*{username}" required>
+            </div>
+
+            <div class="form-row">
+                <label>Mật khẩu</label>
+                <input type="text" th:field="*{password}" required>
+            </div>
+
+            <div class="form-row">
+                <label>Tên nhân viên</label>
+                <input type="text" th:field="*{tenNhanVien}" required>
+            </div>
+
+            <div class="form-row">
+                <label>Ngày sinh</label>
+                <input type="date" th:field="*{ngaySinh}">
+            </div>
+
+            <div class="form-row">
+                <label>CMND</label>
+                <input type="number" th:field="*{cmnd}">
+            </div>
+
+            <div class="form-row">
+                <label>Ngày vào làm</label>
+                <input type="date" th:field="*{ngayVaoLam}">
+            </div>
+
+            <div class="form-row">
+                <label>Chức vụ</label>
+                <select th:field="*{chucVu.maChucVu}">
+                    <option value="">-- Chọn chức vụ --</option>
+                    <option th:each="cv : ${chucVus}"
+                            th:value="${cv.maChucVu}"
+                            th:text="${cv.tenChucVu}">
+                    </option>
+                </select>
+            </div>
+
+            <button class="btn" type="submit">Lưu</button>
+            <a class="btn secondary" href="/admin/nhan-vien">Quay lại</a>
+        </form>
+    </div>
+</div>
+</body>
+</html>

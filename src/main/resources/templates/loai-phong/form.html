@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html lang="vi" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Form loại phòng</title>
+    <link rel="stylesheet" th:href="@{/css/app.css}">
+</head>
+<body>
+<div th:replace="~{fragments/nav :: nav}"></div>
+<div class="container">
+
+    <h1>Thông tin loại phòng</h1>
+    <div class="card">
+        <form method="post" action="/admin/loai-phong/luu" th:object="${item}">
+            <input type="hidden" th:field="*{maLoaiPhong}">
+            <input type="hidden" th:field="*{daXoa}">
+            <div class="form-row">
+                <label>Tên loại phòng</label>
+                <input type="text" th:field="*{tenLoaiPhong}" required>
+            </div>
+            <div class="form-row">
+                <label>Giá phòng</label>
+                <input type="number" th:field="*{giaPhong}" required>
+            </div>
+            <div class="form-row">
+                <label>Mô tả</label>
+                <textarea th:field="*{moTa}" rows="4"></textarea>
+            </div>
+            <button class="btn" type="submit">Lưu</button>
+            <a class="btn secondary" href="/admin/loai-phong">Quay lại</a>
+        </form>
+    </div>
+</div>
+</body>
+</html>

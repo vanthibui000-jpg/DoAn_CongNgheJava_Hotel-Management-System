@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html lang="vi" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Form dịch vụ</title>
+    <link rel="stylesheet" th:href="@{/css/app.css}">
+</head>
+<body>
+<div th:replace="~{fragments/nav :: nav}"></div>
+<div class="container">
+
+    <h1>Thông tin dịch vụ</h1>
+    <div class="card">
+        <form method="post" action="/admin/dich-vu/luu" th:object="${item}" enctype="multipart/form-data">
+            <input type="hidden" th:field="*{maDichVu}">
+            <input type="hidden" th:field="*{hinhAnh}">
+            <div class="alert" th:if="${error}" th:text="${error}"></div>
+            <div class="form-row">
+                <label>Tên dịch vụ</label>
+                <input type="text" th:field="*{tenDichVu}" required>
+            </div>
+            <div class="form-row">
+                <label>Giá dịch vụ</label>
+                <input type="number" th:field="*{giaDichVu}" required>
+            </div>
+            <div class="form-row">
+                <label>Hinh anh dich vu</label>
+                <input type="file" name="hinhAnhFile" accept="image/*">
+                <small>Chon anh moi neu muon thay anh hien tai.</small>
+            </div>
+            <div class="form-row current-image-preview" th:if="${item.hinhAnhHienThi != null}">
+                <label>Anh hien tai</label>
+                <img th:src="${item.hinhAnhHienThi}" alt="Anh dich vu">
+            </div>
+            <button class="btn" type="submit">Lưu</button>
+            <a class="btn secondary" href="/admin/dich-vu">Quay lại</a>
+        </form>
+    </div>
+</div>
+</body>
+</html>

@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html lang="vi" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Cập nhật thông tin</title>
+    <link rel="stylesheet" th:href="@{/css/app.css}">
+</head>
+<body class="client-page">
+<div th:replace="~{client/fragments :: nav}"></div>
+<main class="client-section auth-wrap">
+    <div class="client-card auth-card">
+        <h1>Cập nhật thông tin</h1>
+        <div class="alert" th:if="${error}" th:text="${error}"></div>
+        <div class="alert success" th:if="${success}" th:text="${success}"></div>
+        <form class="form-stack" method="post" action="/tai-khoan/cap-nhat">
+            <div class="form-row">
+                <label>Họ tên</label>
+                <input name="hoTen" th:value="${khachHang.hoTen}" required>
+            </div>
+            <div class="form-row">
+                <label>Email</label>
+                <input type="email" name="email" th:value="${khachHang.email}" required>
+            </div>
+            <div class="form-row">
+                <label>Điện thoại</label>
+                <input name="dienThoai" th:value="${khachHang.dienThoai}">
+            </div>
+            <div class="form-row">
+                <label>CMND/CCCD</label>
+                <input name="cmnd" th:value="${khachHang.cmnd}">
+            </div>
+            <div class="form-row">
+                <label>Địa chỉ</label>
+                <input name="diaChi" th:value="${khachHang.diaChi}">
+            </div>
+            <button class="btn" type="submit">Lưu thông tin</button>
+            <a class="btn secondary" href="/tai-khoan">Quay lại tài khoản</a>
+        </form>
+    </div>
+</main>
+<div th:replace="~{client/fragments :: footer}"></div>
+</body>
+</html>

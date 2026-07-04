@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html lang="vi" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Dịch vụ</title>
+    <link rel="stylesheet" th:href="@{/css/app.css}">
+</head>
+<body>
+<div th:replace="~{fragments/nav :: nav}"></div>
+<div class="container">
+
+    <h1>Quản lý dịch vụ</h1>
+    <div class="card">
+        <div class="actions" style="justify-content:space-between">
+            <form class="search" method="get" action="/admin/dich-vu">
+                <input type="text" name="keyword" placeholder="Tìm theo tên dịch vụ" th:value="${keyword}">
+                <button class="btn" type="submit">Tìm</button>
+            </form>
+            <a class="btn" href="/admin/dich-vu/them">+ Thêm dịch vụ</a>
+        </div>
+
+        <table class="table">
+            <thead>
+            <tr>
+                <th>Mã</th>
+                <th>Hinh anh</th>
+                <th>Tên dịch vụ</th>
+                <th>Giá</th>
+                <th>Thao tác</th>
+            </tr>
+            </thead>
+            <tbody>
+            <tr th:each="item : ${items}">
+                <td th:text="${item.maDichVu}"></td>
+                <td>
+                    <div class="image-thumb" th:if="${item.hinhAnhHienThi != null}">
+                        <img th:src="${item.hinhAnhHienThi}" alt="Anh dich vu">
+                    </div>
+                    <span class="muted-text" th:if="${item.hinhAnhHienThi == null}">Chua co anh</span>
+                </td>
+                <td th:text="${item.tenDichVu}"></td>
+                <td th:text="${item.giaDichVu}"></td>
+                <td>
+                    <a class="btn small secondary" th:href="@{/admin/dich-vu/sua/{id}(id=${item.maDichVu})}">Sửa</a>
+                    <a class="btn small danger" th:href="@{/admin/dich-vu/xoa/{id}(id=${item.maDichVu})}"
+                       onclick="return confirm('Xóa dịch vụ này?')">Xóa</a>
+                </td>
+            </tr>
+            </tbody>
+        </table>
+    </div>
+</div>
+</body>
+</html>

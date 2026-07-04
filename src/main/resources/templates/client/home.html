@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html lang="vi" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Khách sạn Vip</title>
+    <link rel="stylesheet" th:href="@{/css/app.css}">
+</head>
+<body class="client-page">
+<div th:replace="~{client/fragments :: nav}"></div>
+
+<main>
+    <section class="client-hero">
+        <div>
+            <p class="eyebrow">Đặt phòng khách sạn</p>
+            <h1>Khách sạn Vip</h1>
+            <p>Chọn phòng, kiểm tra lịch trống và gửi yêu cầu đặt phòng trực tuyến trong vài bước.</p>
+            <div class="hero-actions">
+                <a class="btn" href="/phong">Xem phòng</a>
+                <a class="btn secondary" href="/dich-vu">Dịch vụ</a>
+            </div>
+        </div>
+    </section>
+
+    <section class="client-section">
+        <div class="section-heading">
+            <h2>Phòng nổi bật</h2>
+            <a href="/phong">Xem tất cả</a>
+        </div>
+        <div class="room-card-grid">
+            <article class="client-card room-card" th:each="phong : ${phongs}">
+                <div class="room-visual image-visual">
+                    <img th:if="${phong.hinhAnhDaiDienHienThi != null}" th:src="${phong.hinhAnhDaiDienHienThi}" alt="Anh phong">
+                    <span th:if="${phong.hinhAnhDaiDienHienThi == null}" th:text="${phong.maPhong}"></span>
+                </div>
+                <div class="room-card-body">
+                    <h3 th:text="'Phòng ' + ${phong.maPhong}"></h3>
+                    <p th:text="${phong.loaiPhong != null ? phong.loaiPhong.tenLoaiPhong : 'Chưa có loại phòng'}"></p>
+                    <strong th:text="${phong.loaiPhong != null && phong.loaiPhong.giaPhong != null ? #numbers.formatInteger(phong.loaiPhong.giaPhong, 0, 'POINT') : ''}"></strong>
+                    <div class="card-actions">
+                        <a class="btn small" th:href="@{/phong/{id}(id=${phong.maPhong})}">Chi tiết</a>
+                        <a class="btn small secondary"
+                           th:if="${phong.trangThai != 'Bảo trì'}"
+                           th:href="@{/dat-phong(maPhong=${phong.maPhong})}">Đặt phòng</a>
+                        <span class="btn small secondary disabled" th:if="${phong.trangThai == 'Bảo trì'}">Bảo trì</span>
+                    </div>
+                </div>
+            </article>
+        </div>
+    </section>
+
+    <section class="client-section">
+        <div class="section-heading">
+            <h2>Dịch vụ</h2>
+            <a href="/dich-vu">Xem dịch vụ</a>
+        </div>
+        <div class="service-grid service-grid-wide">
+            <article class="client-card service-card split-service-card" th:each="dv : ${dichVus}">
+                <div class="service-info">
+                    <h3 th:text="${dv.tenDichVuHienThi}"></h3>
+                    <p>Dịch vụ tiện ích của khách sạn.</p>
+                    <strong th:text="${dv.giaDichVu != null ? #numbers.formatInteger(dv.giaDichVu, 0, 'POINT') + ' VNĐ' : ''}"></strong>
+                </div>
+                <div class="service-visual service-photo">
+                    <img th:if="${dv.hinhAnhHienThi != null}" th:src="${dv.hinhAnhHienThi}" alt="Anh dich vu">
+                    <span th:if="${dv.hinhAnhHienThi == null}" th:text="${not #strings.isEmpty(dv.tenDichVuHienThi) ? #strings.substring(dv.tenDichVuHienThi, 0, 1) : 'DV'}"></span>
+                </div>
+            </article>
+        </div>
+    </section>
+</main>
+
+<div th:replace="~{client/fragments :: footer}"></div>
+</body>
+</html>

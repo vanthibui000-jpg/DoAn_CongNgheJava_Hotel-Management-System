@@ -1,0 +1,21 @@
+<!DOCTYPE html>
+<html lang="vi" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Liên hệ</title>
+    <link rel="stylesheet" th:href="@{/css/app.css}">
+</head>
+<body class="client-page">
+<div th:replace="~{client/fragments :: nav}"></div>
+<main class="client-section">
+    <div class="client-card contact-card">
+        <h1>Liên hệ khách sạn</h1>
+        <p>Địa chỉ: 123 Vip Street, Quận 1, TP. Hồ Chí Minh</p>
+        <p>Hotline: 0909 123 456</p>
+        <p>Email: hello@khachsanvip.vn</p>
+        <a class="btn" href="/phong">Xem phòng đang có</a>
+    </div>
+</main>
+<div th:replace="~{client/fragments :: footer}"></div>
+</body>
+</html>

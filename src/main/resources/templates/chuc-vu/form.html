@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html lang="vi" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Thông tin chức vụ</title>
+    <link rel="stylesheet" th:href="@{/css/app.css}">
+</head>
+<body>
+<div th:replace="~{fragments/nav :: nav}"></div>
+<div class="container">
+    <h1>Thông tin chức vụ</h1>
+    <div class="card">
+        <div class="alert" th:if="${error}" th:text="${error}"></div>
+        <form method="post" action="/admin/chuc-vu/luu" th:object="${item}">
+            <input type="hidden" th:field="*{maChucVu}">
+            <div class="form-row">
+                <label>Tên chức vụ</label>
+                <input th:field="*{tenChucVu}" placeholder="VD: Quan Ly, Le tan, Bao ve, Tap vu" required>
+            </div>
+            <div class="form-row two-span">
+                <label>Quyền hạn chức năng</label>
+                <div class="permission-grid">
+                    <label class="permission-option" th:each="permission : ${permissionOptions}">
+                        <input type="checkbox"
+                               name="quyenIds"
+                               th:value="${permission.code()}"
+                               th:checked="${#lists.contains(selectedPermissions, permission.code())}">
+                        <span th:text="${permission.label()}">Quyền</span>
+                    </label>
+                </div>
+                <small>Nếu không chọn quyền nào, hệ thống sẽ dùng quyền mặc định cho 4 chức vụ gốc.</small>
+            </div>
+            <button class="btn" type="submit">Lưu</button>
+            <a class="btn secondary" href="/admin/chuc-vu">Quay lại</a>
+        </form>
+    </div>
+</div>
+</body>
+</html>

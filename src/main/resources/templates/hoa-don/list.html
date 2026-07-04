@@ -1,0 +1,105 @@
+<!DOCTYPE html>
+<html lang="vi" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Hóa đơn</title>
+    <link rel="stylesheet" th:href="@{/css/app.css}">
+</head>
+<body>
+
+<div th:replace="~{fragments/nav :: nav}"></div>
+
+<div class="container">
+
+    <h1>Quản lý hóa đơn</h1>
+    <div class="alert success" th:if="${message}" th:text="${message}"></div>
+    <div class="alert" th:if="${error}" th:text="${error}"></div>
+
+    <div class="card">
+
+        <a class="btn"
+           href="/admin/hoa-don/them">
+            Thêm hóa đơn
+        </a>
+
+        <table class="table"
+               style="margin-top:14px">
+
+            <thead>
+            <tr>
+                <th>Mã HĐ</th>
+                <th>Ngày thu tiền</th>
+                <th>Số tiền thu</th>
+                <th>Mã đặt phòng</th>
+                <th>Nhân viên</th>
+                <th>Trạng thái</th>
+                <th>Thao tác</th>
+            </tr>
+            </thead>
+
+            <tbody>
+
+            <tr th:each="item : ${items}">
+
+                <td th:text="${item.maHoaDon}"></td>
+
+                <td th:text="${item.ngayThuTien}"></td>
+
+                <td class="price-cell" th:text="${item.soTienThu != null ? #numbers.formatInteger(item.soTienThu, 0, 'POINT') : ''}"></td>
+
+                <td th:text="${item.ctDatPhong != null ? item.ctDatPhong.maCtDatPhong : ''}">
+                </td>
+
+                <td th:text="${item.nhanVien != null ? item.nhanVien.tenNhanVien : ''}">
+                </td>
+
+                <td>
+
+                    <span class="status-badge success" th:if="${item.trangThai == 'DA_THANH_TOAN'}">
+                        Đã thanh toán
+                    </span>
+
+                    <span class="status-badge warning" th:if="${item.trangThai == 'CHUA_THANH_TOAN' or item.trangThai == null or item.trangThai == '' or item.trangThai == 'CHƯA THANH TOÁN'}">
+                        Chưa thanh toán
+                    </span>
+
+                </td>
+
+                <td class="table-actions">
+
+                    <a class="btn small"
+                       th:href="@{/admin/hoa-don/chi-tiet/{id}(id=${item.maHoaDon})}">
+                        Chi tiết
+                    </a>
+
+                    <a class="btn small secondary"
+                       th:href="@{/admin/hoa-don/sua/{id}(id=${item.maHoaDon})}">
+                        Sửa
+                    </a>
+
+                    <a class="btn small"
+                       th:if="${item.trangThai == 'CHUA_THANH_TOAN' or item.trangThai == null or item.trangThai == '' or item.trangThai == 'CHƯA THANH TOÁN'}"
+                       th:href="@{/admin/hoa-don/thanh-toan/{id}(id=${item.maHoaDon})}">
+                        Thanh toán
+                    </a>
+
+                    <a class="btn small danger"
+                       th:href="@{/admin/hoa-don/xoa/{id}(id=${item.maHoaDon})}"
+                       onclick="return confirm('Xóa hóa đơn này?')">
+                        Xóa
+                    </a>
+
+                </td>
+
+            </tr>
+
+            </tbody>
+
+        </table>
+
+    </div>
+
+</div>
+
+</body>
+</html>

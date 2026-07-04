@@ -1,0 +1,181 @@
+<div class="admin-shell"
+     th:fragment="nav"
+     xmlns:th="http://www.thymeleaf.org">
+
+    <aside class="admin-sidebar">
+        <a class="admin-brand d-flex align-items-center gap-2 px-3 py-3" href="/admin">
+            <span class="brand-icon"><i class="fa-solid fa-hotel"></i></span>
+            <span>KHÁCH SẠN ADMIN</span>
+        </a>
+
+        <nav class="admin-menu px-2">
+            <a class="admin-menu-link"
+               th:if="${navPermissions != null and #lists.contains(navPermissions, 'DASHBOARD')}"
+               href="/admin">
+                <i class="fa-solid fa-gauge-high"></i>
+                <span>Dashboard</span>
+            </a>
+            <a class="admin-menu-link"
+               th:if="${navPermissions != null and #lists.contains(navPermissions, 'NHAN_VIEN')}"
+               href="/admin/nhan-vien">
+                <i class="fa-solid fa-users"></i>
+                <span>Nhân viên</span>
+            </a>
+            <a class="admin-menu-link"
+               th:if="${navPermissions != null and #lists.contains(navPermissions, 'CHUC_VU')}"
+               href="/admin/chuc-vu">
+                <i class="fa-solid fa-id-badge"></i>
+                <span>Chức vụ</span>
+            </a>
+            <a class="admin-menu-link"
+               th:if="${navPermissions != null and #lists.contains(navPermissions, 'KHACH_HANG')}"
+               href="/admin/khach-hang">
+                <i class="fa-solid fa-user-check"></i>
+                <span>Khách hàng</span>
+            </a>
+            <a class="admin-menu-link"
+               th:if="${navPermissions != null and #lists.contains(navPermissions, 'LOAI_PHONG')}"
+               href="/admin/loai-phong">
+                <i class="fa-solid fa-bed"></i>
+                <span>Loại phòng</span>
+            </a>
+            <a class="admin-menu-link"
+               th:if="${navPermissions != null and #lists.contains(navPermissions, 'PHONG')}"
+               href="/admin/phong">
+                <i class="fa-solid fa-key"></i>
+                <span>Phòng</span>
+            </a>
+            <a class="admin-menu-link"
+               th:if="${navPermissions != null and #lists.contains(navPermissions, 'DAT_PHONG')}"
+               href="/admin/dat-phong">
+                <i class="fa-solid fa-calendar-check"></i>
+                <span>Đặt phòng</span>
+            </a>
+            <a class="admin-menu-link"
+               th:if="${navPermissions != null and #lists.contains(navPermissions, 'DICH_VU')}"
+               href="/admin/dich-vu">
+                <i class="fa-solid fa-mug-saucer"></i>
+                <span>Dịch vụ</span>
+            </a>
+            <a class="admin-menu-link"
+               th:if="${navPermissions != null and #lists.contains(navPermissions, 'CT_DICH_VU')}"
+               href="/admin/ct-dich-vu">
+                <i class="fa-solid fa-cart-shopping"></i>
+                <span>Sử dụng DV</span>
+            </a>
+            <a class="admin-menu-link"
+               th:if="${navPermissions != null and #lists.contains(navPermissions, 'HOA_DON')}"
+               href="/admin/hoa-don">
+                <i class="fa-solid fa-file-invoice-dollar"></i>
+                <span>Hóa đơn</span>
+            </a>
+            <a class="admin-menu-link"
+               th:if="${navPermissions != null and #lists.contains(navPermissions, 'HOA_DON')}"
+               href="/admin/thanh-toan">
+                <i class="fa-solid fa-qrcode"></i>
+                <span>Thanh toán</span>
+            </a>
+            <a class="admin-menu-link"
+               th:if="${navPermissions != null and #lists.contains(navPermissions, 'PHAN_CONG')}"
+               href="/admin/phan-cong">
+                <i class="fa-solid fa-clipboard-list"></i>
+                <span>Phân công</span>
+            </a>
+            <a class="admin-menu-link"
+               th:if="${navPermissions != null and #lists.contains(navPermissions, 'DANH_GIA')}"
+               href="/admin/danh-gia">
+                <i class="fa-solid fa-star-half-stroke"></i>
+                <span>Đánh giá</span>
+            </a>
+            <a class="admin-menu-link"
+               th:if="${navPermissions != null and #lists.contains(navPermissions, 'THONG_KE')}"
+               href="/admin/thong-ke">
+                <i class="fa-solid fa-chart-line"></i>
+                <span>Thống kê</span>
+            </a>
+        </nav>
+    </aside>
+
+    <header class="admin-topbar shadow-sm">
+        <div class="d-flex align-items-center gap-2 text-muted fw-semibold">
+            <i class="fa-solid fa-layer-group text-primary"></i>
+            <span>Hệ thống quản lý khách sạn</span>
+        </div>
+
+        <div class="dropdown ms-auto">
+            <button class="admin-account dropdown-toggle"
+                    type="button"
+                    data-bs-toggle="dropdown"
+                    aria-expanded="false">
+                <span class="admin-avatar">
+                    <i class="fa-solid fa-user-tie"></i>
+                </span>
+                <span class="account-text">
+                    <strong th:text="${session.loggedInUser != null ? session.loggedInUser.tenNhanVien : 'Nguyễn Quốc Việt'}">
+                        Nguyễn Quốc Việt
+                    </strong>
+                    <small th:text="${session.loggedInUser != null and session.loggedInUser.chucVu != null ? session.loggedInUser.chucVu.tenChucVu : 'Quản lý'}">
+                        Quản lý
+                    </small>
+                </span>
+            </button>
+
+            <ul class="dropdown-menu dropdown-menu-end admin-account-menu">
+                <li>
+                    <a class="dropdown-item" href="/doi-mat-khau">
+                        <i class="fa-solid fa-key me-2"></i>Đổi mật khẩu
+                    </a>
+                </li>
+                <li>
+                    <a class="dropdown-item" href="/">
+                        <i class="fa-solid fa-globe me-2"></i>Trang khách
+                    </a>
+                </li>
+                <li><hr class="dropdown-divider"></li>
+                <li>
+                    <a class="dropdown-item text-danger fw-bold" href="/logout" data-admin-confirm-logout>
+                        <i class="fa-solid fa-right-from-bracket me-2"></i>Đăng xuất
+                    </a>
+                </li>
+            </ul>
+        </div>
+    </header>
+
+    <dialog class="logout-dialog">
+        <form method="dialog" class="logout-dialog-box">
+            <h3>Xác nhận đăng xuất</h3>
+            <p>Bạn có chắc muốn đăng xuất khỏi trang quản lý không?</p>
+            <div class="actions right">
+                <button class="btn secondary" value="cancel">Hủy</button>
+                <a class="btn danger logout-confirm-link" href="/logout">Đăng xuất</a>
+            </div>
+        </form>
+    </dialog>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+    <script>
+        document.querySelectorAll('[data-admin-confirm-logout]').forEach(function(link) {
+            link.addEventListener('click', function(event) {
+                var dialog = document.querySelector('.logout-dialog');
+                if (!dialog || typeof dialog.showModal !== 'function') {
+                    if (!confirm('Bạn có chắc muốn đăng xuất khỏi trang quản lý không?')) {
+                        event.preventDefault();
+                    }
+                    return;
+                }
+                event.preventDefault();
+                dialog.querySelector('.logout-confirm-link').setAttribute('href', link.getAttribute('href'));
+                dialog.showModal();
+            });
+        });
+        document.querySelectorAll('.admin-menu-link').forEach(function(link) {
+            var href = link.getAttribute('href');
+            var path = window.location.pathname;
+            if (href === '/admin' && (path === '/admin' || path === '/admin/dashboard')) {
+                link.classList.add('active');
+            } else if (href !== '/admin' && path.indexOf(href) === 0) {
+                link.classList.add('active');
+            }
+        });
+    </script>
+</div>

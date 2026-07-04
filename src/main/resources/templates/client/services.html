@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html lang="vi" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Dịch vụ</title>
+    <link rel="stylesheet" th:href="@{/css/app.css}">
+</head>
+<body class="client-page">
+<div th:replace="~{client/fragments :: nav}"></div>
+<main class="client-section">
+    <div class="section-heading">
+        <h1>Dịch vụ khách sạn</h1>
+    </div>
+    <form class="client-card client-search-panel search" method="get" action="/dich-vu">
+        <input type="text" name="keyword" placeholder="Tìm dịch vụ" th:value="${keyword}">
+        <button class="btn" type="submit">Tìm</button>
+        <a class="btn secondary" href="/dich-vu">Làm mới</a>
+    </form>
+    <div class="service-grid service-grid-wide">
+        <article class="client-card service-card split-service-card" th:each="dv : ${dichVus}">
+            <div class="service-info">
+                <h3 th:text="${dv.tenDichVuHienThi}"></h3>
+                <p>Tiện ích hỗ trợ kỳ nghỉ của quý khách thêm thoải mái.</p>
+                <strong th:text="${dv.giaDichVu != null ? #numbers.formatInteger(dv.giaDichVu, 0, 'POINT') + ' VNĐ' : ''}"></strong>
+            </div>
+            <div class="service-visual service-photo">
+                <img th:if="${dv.hinhAnhHienThi != null}" th:src="${dv.hinhAnhHienThi}" alt="Anh dich vu">
+                <span th:if="${dv.hinhAnhHienThi == null}" th:text="${not #strings.isEmpty(dv.tenDichVuHienThi) ? #strings.substring(dv.tenDichVuHienThi, 0, 1) : 'DV'}"></span>
+            </div>
+        </article>
+    </div>
+    <div class="client-card" th:if="${#lists.isEmpty(dichVus)}">
+        <p class="empty-row">Không tìm thấy dịch vụ phù hợp.</p>
+    </div>
+</main>
+<div th:replace="~{client/fragments :: footer}"></div>
+</body>
+</html>

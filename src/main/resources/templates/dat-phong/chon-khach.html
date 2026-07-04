@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html lang="vi" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Chọn khách hàng</title>
+    <link rel="stylesheet" th:href="@{/css/app.css}">
+</head>
+<body>
+<div th:replace="~{fragments/nav :: nav}"></div>
+<div class="container">
+    <h1>Chọn khách hàng để đặt phòng</h1>
+
+    <div class="card">
+        <form class="search" method="get" action="/admin/dat-phong/chon-khach">
+            <input type="text"
+                   name="keyword"
+                   th:value="${keyword}"
+                   placeholder="Tìm theo tên, CMND, SĐT hoặc email">
+            <button class="btn" type="submit">Tìm</button>
+            <a class="btn secondary" href="/admin/dat-phong/chon-khach">Tất cả</a>
+        </form>
+
+        <table class="table">
+            <thead>
+            <tr>
+                <th>Mã</th>
+                <th>Họ tên</th>
+                <th>SĐT</th>
+                <th>CMND/CCCD</th>
+                <th>Email</th>
+                <th>Thao tác</th>
+            </tr>
+            </thead>
+            <tbody>
+            <tr th:each="kh : ${khachHangs}">
+                <td th:text="${kh.maKhachHang}"></td>
+                <td th:text="${kh.hoTen}"></td>
+                <td th:text="${kh.dienThoai}"></td>
+                <td th:text="${kh.cmnd}"></td>
+                <td th:text="${kh.email}"></td>
+                <td>
+                    <a class="btn small"
+                       th:href="@{/admin/dat-phong/tao-don/{id}(id=${kh.maKhachHang})}">
+                        Chọn
+                    </a>
+                </td>
+            </tr>
+            <tr th:if="${#lists.isEmpty(khachHangs)}">
+                <td colspan="6" class="empty-row">Không tìm thấy khách hàng</td>
+            </tr>
+            </tbody>
+        </table>
+
+        <a class="btn secondary" href="/admin/dat-phong">Quay lại</a>
+    </div>
+</div>
+
+</body>
+</html>

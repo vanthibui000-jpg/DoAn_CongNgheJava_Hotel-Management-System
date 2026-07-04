@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html lang="vi" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Thông tin khách hàng</title>
+    <link rel="stylesheet" th:href="@{/css/app.css}">
+</head>
+<body>
+<div th:replace="~{fragments/nav :: nav}"></div>
+<div class="container">
+
+    <h1>Thông tin khách hàng</h1>
+    <div class="alert" th:if="${error}" th:text="${error}"></div>
+
+    <div class="card">
+        <form method="post" action="/admin/khach-hang/luu" th:object="${item}">
+            <input type="hidden" name="isEdit" th:value="${isEdit}">
+
+            <div class="form-row">
+                <label>Mã khách hàng</label>
+                <input type="number" th:field="*{maKhachHang}" th:readonly="${isEdit}" required>
+            </div>
+            <div class="form-row">
+                <label>Họ tên</label>
+                <input type="text" th:field="*{hoTen}" required>
+            </div>
+            <div class="form-row">
+                <label>Email</label>
+                <input type="email" th:field="*{email}">
+            </div>
+            <div class="form-row">
+                <label>Địa chỉ</label>
+                <input type="text" th:field="*{diaChi}">
+            </div>
+            <div class="form-row">
+                <label>Điện thoại</label>
+                <input type="text" th:field="*{dienThoai}">
+            </div>
+            <div class="form-row">
+                <label>CMND/CCCD</label>
+                <input type="text" th:field="*{cmnd}">
+            </div>
+            <div class="form-row">
+                <label>Mật khẩu khách hàng</label>
+                <input type="text" th:field="*{matKhau}" placeholder="Mặc định 1 nếu bỏ trống">
+            </div>
+            <div class="form-row">
+                <label>Trạng thái tài khoản</label>
+                <select th:field="*{trangThai}">
+                    <option value="HOAT_DONG">Hoạt động</option>
+                    <option value="KHOA">Khóa</option>
+                </select>
+            </div>
+            <button class="btn" type="submit">Lưu</button>
+            <a class="btn secondary" href="/admin/khach-hang">Quay lại</a>
+        </form>
+    </div>
+</div>
+</body>
+</html>

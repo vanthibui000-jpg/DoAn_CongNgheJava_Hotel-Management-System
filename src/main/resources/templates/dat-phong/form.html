@@ -1,0 +1,107 @@
+<!DOCTYPE html>
+<html lang="vi" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Form đặt phòng</title>
+    <link rel="stylesheet" th:href="@{/css/app.css}">
+</head>
+<body>
+<div th:replace="~{fragments/nav :: nav}"></div>
+<div class="container">
+
+    <h1>Thông tin đặt phòng</h1>
+    <div class="alert" th:if="${error}" th:text="${error}"></div>
+
+    <div class="card">
+        <form method="post" action="/admin/dat-phong/luu" th:object="${item}">
+            <input type="hidden" name="lockCustomerSelection" th:value="${lockCustomerSelection}">
+
+            <div class="form-row">
+                <label>Mã chi tiết đặt phòng</label>
+                <input type="number" th:field="*{maCtDatPhong}" required>
+            </div>
+            <div class="form-row">
+                <label>Ngày thực hiện</label>
+                <input type="date" th:field="*{ngayThucHien}">
+            </div>
+            <div class="form-row">
+                <label>Khách hàng</label>
+                <input type="hidden"
+                       th:if="${lockCustomerSelection}"
+                       th:field="*{khachHang.maKhachHang}">
+                <select th:field="*{khachHang.maKhachHang}"
+                        th:disabled="${lockCustomerSelection}"
+                        required>
+                    <option value="">-- Chọn khách hàng --</option>
+                    <option th:each="kh : ${khachHangs}"
+                            th:value="${kh.maKhachHang}"
+                            th:text="${kh.hoTen}">
+                    </option>
+                </select>
+            </div>
+            <div class="form-row">
+                <label>Ngày nhận</label>
+                <input type="date" th:field="*{ngayNhan}">
+            </div>
+            <div class="form-row">
+                <label>Ngày trả</label>
+                <input type="date" th:field="*{ngayTra}">
+            </div>
+            <div class="form-row">
+                <label>Phòng</label>
+                <select th:field="*{phong.maPhong}" required>
+                    <option value="">-- Chọn phòng --</option>
+                    <option th:each="p : ${phongs}"
+                            th:value="${p.maPhong}"
+                            th:text="${p.maPhong}">
+                    </option>
+                </select>
+            </div>
+            <div class="form-row">
+                <label>Nhân viên</label>
+                <select th:field="*{nhanVien.maNhanVien}" required>
+                    <option value="">-- Chọn nhân viên --</option>
+                    <option th:each="nv : ${nhanViens}"
+                            th:value="${nv.maNhanVien}"
+                            th:text="${nv.tenNhanVien}">
+                    </option>
+                </select>
+            </div>
+            <div class="form-row">
+                <label>Trạng thái</label>
+                <select th:field="*{trangThai}">
+                    <option value="CHO_XAC_NHAN">Chờ xác nhận</option>
+                    <option value="DA_XAC_NHAN">Đã xác nhận</option>
+                    <option value="DA_HUY">Đã hủy</option>
+                    <option value="DA_THANH_TOAN">Đã thanh toán</option>
+                    <option value="DA_TRA_PHONG">Đã trả phòng</option>
+                </select>
+            </div>
+            <button class="btn" type="submit">Lưu</button>
+            <a class="btn secondary" href="/admin/dat-phong">Quay lại</a>
+        </form>
+    </div>
+</div>
+<script>
+    const adminCheckIn = document.getElementById('ngayNhan');
+    const adminCheckOut = document.getElementById('ngayTra');
+
+    function updateAdminCheckoutMin() {
+        if (!adminCheckIn || !adminCheckOut || !adminCheckIn.value) {
+            return;
+        }
+        const nextDate = new Date(adminCheckIn.value);
+        nextDate.setDate(nextDate.getDate() + 1);
+        adminCheckOut.min = nextDate.toISOString().slice(0, 10);
+        if (adminCheckOut.value && adminCheckOut.value <= adminCheckIn.value) {
+            adminCheckOut.value = adminCheckOut.min;
+        }
+    }
+
+    if (adminCheckIn && adminCheckOut) {
+        adminCheckIn.addEventListener('change', updateAdminCheckoutMin);
+        updateAdminCheckoutMin();
+    }
+</script>
+</body>
+</html>

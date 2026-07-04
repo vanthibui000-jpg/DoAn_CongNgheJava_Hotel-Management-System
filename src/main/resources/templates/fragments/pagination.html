@@ -1,0 +1,26 @@
+﻿<!DOCTYPE html>
+<html lang="vi" xmlns:th="http://www.thymeleaf.org">
+<body>
+<div class="pagination" th:fragment="pagination" th:if="${totalItems != null}">
+    <div class="pagination-info"
+         th:text="${totalItems == 0 ? 'Không có dữ liệu' : 'Hiển thị ' + #numbers.formatInteger(firstItem, 0, 'POINT') + ' - ' + #numbers.formatInteger(lastItem, 0, 'POINT') + ' / ' + #numbers.formatInteger(totalItems, 0, 'POINT')}">
+    </div>
+
+    <div class="pagination-pages" th:if="${totalPages > 1}">
+        <a class="page-link"
+           th:classappend="${currentPage == 0 ? ' disabled' : ''}"
+           th:href="${currentPage == 0 ? '#' : pageBaseUrl + (currentPage - 1)}">Trước</a>
+
+        <a class="page-link"
+           th:each="pageNumber : ${pageNumbers}"
+           th:classappend="${pageNumber == currentPage ? ' active' : ''}"
+           th:href="${pageBaseUrl + pageNumber}"
+           th:text="${pageNumber + 1}"></a>
+
+        <a class="page-link"
+           th:classappend="${currentPage + 1 >= totalPages ? ' disabled' : ''}"
+           th:href="${currentPage + 1 >= totalPages ? '#' : pageBaseUrl + (currentPage + 1)}">Sau</a>
+    </div>
+</div>
+</body>
+</html>

@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html lang="vi" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Form đánh giá</title>
+    <link rel="stylesheet" th:href="@{/css/app.css}">
+</head>
+<body>
+<div th:replace="~{fragments/nav :: nav}"></div>
+<div class="container">
+
+    <h1>Thông tin đánh giá</h1>
+    <div class="card">
+        <form method="post" action="/admin/danh-gia/luu" th:object="${item}">
+            <input type="hidden" th:field="*{id}">
+            <div class="form-row">
+                <label>Nội dung</label>
+                <textarea th:field="*{noiDung}" rows="4" required></textarea>
+            </div>
+            <div class="form-row">
+                <label>Ngày đánh giá</label>
+                <input type="date" th:field="*{ngayDanhGia}">
+            </div>
+            <div class="form-row">
+                <label>Phòng</label>
+                <select th:field="*{phong.maPhong}" required>
+                    <option value="">-- Chọn phòng --</option>
+                    <option th:each="p : ${phongs}" th:value="${p.maPhong}" th:text="${p.maPhong}"></option>
+                </select>
+            </div>
+            <div class="form-row">
+                <label>Số sao</label>
+                <input type="number" th:field="*{soSao}" min="1" max="5">
+            </div>
+            <button class="btn" type="submit">Lưu</button>
+            <a class="btn secondary" href="/admin/danh-gia">Quay lại</a>
+        </form>
+    </div>
+</div>
+</body>
+</html>

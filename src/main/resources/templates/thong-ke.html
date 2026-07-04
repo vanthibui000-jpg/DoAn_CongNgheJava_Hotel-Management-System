@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html lang="vi" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Thống kê doanh thu</title>
+    <link rel="stylesheet" th:href="@{/css/app.css}">
+</head>
+<body>
+<div th:replace="~{fragments/nav :: nav}"></div>
+
+<div class="container admin-wide">
+    <h1>Thống kê doanh thu</h1>
+
+    <div class="card admin-panel">
+        <div class="section-heading">
+            <h2>Doanh thu theo ngày</h2>
+        </div>
+
+        <form class="toolbar-filter revenue-day-filter" method="get" action="/admin/thong-ke">
+            <div class="form-row">
+                <label>Ngày thu tiền</label>
+                <input type="date" name="ngay" th:value="${selectedNgay}">
+            </div>
+
+            <div class="filter-actions">
+                <button class="btn" type="submit">
+                    <i class="fa-solid fa-chart-simple"></i>
+                    Xem
+                </button>
+            </div>
+        </form>
+
+        <div class="metric-result" th:if="${doanhThuNgay != null}">
+            <span>Doanh thu:</span>
+            <strong th:text="${#numbers.formatInteger(doanhThuNgay,0,'COMMA') + ' VNĐ'}"></strong>
+        </div>
+    </div>
+
+    <div class="card admin-panel">
+        <div class="section-heading">
+            <h2>Doanh thu theo tháng</h2>
+        </div>
+
+        <form class="toolbar-filter revenue-month-filter" method="get" action="/admin/thong-ke">
+            <div class="form-row">
+                <label>Tháng</label>
+                <select name="thang">
+                    <option th:each="i : ${#numbers.sequence(1,12)}"
+                            th:value="${i}"
+                            th:selected="${i == selectedThang}"
+                            th:text="${'Tháng ' + i}">
+                    </option>
+                </select>
+            </div>
+
+            <div class="form-row">
+                <label>Năm</label>
+                <input type="number"
+                       name="nam"
+                       th:value="${selectedNam}">
+            </div>
+
+            <div class="filter-actions">
+                <button class="btn" type="submit">
+                    <i class="fa-solid fa-chart-line"></i>
+                    Xem
+                </button>
+            </div>
+        </form>
+
+        <div class="metric-result" th:if="${doanhThuThang != null}">
+            <span>Doanh thu:</span>
+            <strong th:text="${#numbers.formatInteger(doanhThuThang,0,'COMMA') + ' VNĐ'}"></strong>
+        </div>
+    </div>
+</div>
+</body>
+</html>

@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html lang="vi" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Form phân công</title>
+    <link rel="stylesheet" th:href="@{/css/app.css}">
+</head>
+<body>
+<div th:replace="~{fragments/nav :: nav}"></div>
+<div class="container">
+
+    <h1>Thông tin phân công</h1>
+    <div class="card">
+        <form method="post" action="/admin/phan-cong/luu" th:object="${item}">
+            <input type="hidden" th:field="*{maPhanCong}">
+            <div class="form-row">
+                <label>Ngày phân công</label>
+                <input type="date" th:field="*{ngayPhanCong}">
+            </div>
+            <div class="form-row">
+                <label>Loại công việc</label>
+                <input type="text" th:field="*{loaiCongViec}" required>
+            </div>
+            <div class="form-row">
+                <label>Nhân viên</label>
+                <select th:field="*{nhanVien.maNhanVien}" required>
+                    <option value="">-- Chọn nhân viên --</option>
+                    <option th:each="nv : ${nhanViens}" th:value="${nv.maNhanVien}" th:text="${nv.tenNhanVien}"></option>
+                </select>
+            </div>
+            <button class="btn" type="submit">Lưu</button>
+            <a class="btn secondary" href="/admin/phan-cong">Quay lại</a>
+        </form>
+    </div>
+</div>
+</body>
+</html>

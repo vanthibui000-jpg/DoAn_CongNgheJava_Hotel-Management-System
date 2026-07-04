@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html lang="vi" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Loại phòng</title>
+    <link rel="stylesheet" th:href="@{/css/app.css}">
+</head>
+<body>
+<div th:replace="~{fragments/nav :: nav}"></div>
+<div class="container">
+
+    <h1>Quản lý loại phòng</h1>
+    <div class="card">
+        <a class="btn" href="/admin/loai-phong/them">+ Thêm loại phòng</a>
+        <table class="table" style="margin-top:14px">
+            <thead>
+            <tr>
+                <th>Mã</th>
+                <th>Tên loại</th>
+                <th>Giá phòng</th>
+                <th>Mô tả</th>
+                <th>Trạng thái</th>
+                <th>Thao tác</th>
+            </tr>
+            </thead>
+            <tbody>
+            <tr th:each="item : ${items}">
+                <td th:text="${item.maLoaiPhong}"></td>
+                <td th:text="${item.tenLoaiPhong}"></td>
+                <td th:text="${item.giaPhong}"></td>
+                <td th:text="${item.moTa}"></td>
+                <td th:text="${item.daXoa == true ? 'Ngưng kinh doanh' : 'Đang kinh doanh'}"></td>
+                <td>
+                    <a class="btn small secondary" th:href="@{/admin/loai-phong/sua/{id}(id=${item.maLoaiPhong})}">Sửa</a>
+                    <a class="btn small danger" th:if="${item.daXoa != true}"
+                       th:href="@{/admin/loai-phong/xoa/{id}(id=${item.maLoaiPhong})}"
+                       onclick="return confirm('Ngưng kinh doanh loại phòng này?')">Ngưng</a>
+                    <a class="btn small" th:if="${item.daXoa == true}"
+                       th:href="@{/admin/loai-phong/khoi-phuc/{id}(id=${item.maLoaiPhong})}">Khôi phục</a>
+                </td>
+            </tr>
+            </tbody>
+        </table>
+    </div>
+</div>
+</body>
+</html>

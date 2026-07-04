@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html lang="vi" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Quản lý chức vụ</title>
+    <link rel="stylesheet" th:href="@{/css/app.css}">
+</head>
+<body>
+<div th:replace="~{fragments/nav :: nav}"></div>
+<div class="container admin-wide">
+    <div class="section-heading">
+        <h1>Quản lý chức vụ</h1>
+        <a class="btn" href="/admin/chuc-vu/them">+ Thêm chức vụ</a>
+    </div>
+    <div class="card">
+        <table class="table admin-table">
+            <thead>
+            <tr>
+                <th>Mã chức vụ</th>
+                <th>Tên chức vụ</th>
+                <th>Ghi chú quyền</th>
+                <th>Thao tác</th>
+            </tr>
+            </thead>
+            <tbody>
+            <tr th:each="item : ${items}">
+                <td><span class="id-badge" th:text="${item.maChucVu}"></span></td>
+                <td th:text="${item.tenChucVu}"></td>
+                <td th:text="${permissionLabels[item.maChucVu]}"></td>
+                <td>
+                    <div class="table-actions">
+                        <a class="btn small secondary" th:href="@{/admin/chuc-vu/sua/{id}(id=${item.maChucVu})}">Sửa</a>
+                        <a class="btn small danger" th:href="@{/admin/chuc-vu/xoa/{id}(id=${item.maChucVu})}"
+                           onclick="return confirm('Xóa chức vụ này? Nếu nhân viên đang dùng chức vụ này thì có thể lỗi ràng buộc dữ liệu.')">Xóa</a>
+                    </div>
+                </td>
+            </tr>
+            <tr th:if="${#lists.isEmpty(items)}">
+                <td colspan="4" class="empty-row">Chưa có chức vụ nào.</td>
+            </tr>
+            </tbody>
+        </table>
+    </div>
+</div>
+</body>
+</html>

@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html lang="vi" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Thông tin phòng</title>
+    <link rel="stylesheet" th:href="@{/css/app.css}">
+</head>
+<body>
+<div th:replace="~{fragments/nav :: nav}"></div>
+<div class="container">
+
+    <h1>Thông tin phòng</h1>
+    <div class="alert" th:if="${error}" th:text="${error}"></div>
+
+    <div class="card">
+        <form method="post" action="/admin/phong/luu" th:object="${item}" enctype="multipart/form-data">
+            <input type="hidden" name="isEdit" th:value="${isEdit}">
+            <input type="hidden" th:field="*{hinhAnhDaiDien}">
+
+            <div class="form-row">
+                <label>Mã phòng</label>
+                <input type="number" th:field="*{maPhong}" th:readonly="${isEdit}" required>
+            </div>
+            <div class="form-row">
+                <label>Loại phòng</label>
+                <select th:field="*{loaiPhong.maLoaiPhong}" required>
+                    <option value="">-- Chọn loại phòng --</option>
+                    <option th:each="lp : ${loaiPhongs}"
+                            th:value="${lp.maLoaiPhong}"
+                            th:text="${lp.tenLoaiPhong}">
+                    </option>
+                </select>
+            </div>
+            <div class="form-row">
+                <label>Trạng thái</label>
+                <select th:field="*{trangThai}">
+                    <option value="Trống">Trống</option>
+                    <option value="Đang thuê">Đang thuê</option>
+                    <option value="Bảo trì">Bảo trì</option>
+                </select>
+            </div>
+            <div class="form-row two-span">
+                <label>Hinh anh phong</label>
+                <input type="file" name="hinhAnhFiles" accept="image/*" multiple>
+                <small>Co the chon nhieu anh. Anh dau tien se duoc dung lam anh dai dien.</small>
+            </div>
+            <div class="form-row two-span current-image-preview" th:if="${!#lists.isEmpty(roomGallery)}">
+                <label>Anh hien tai</label>
+                <div class="form-image-gallery">
+                    <img th:each="imageUrl : ${roomGallery}" th:src="${imageUrl}" alt="Anh phong">
+                </div>
+            </div>
+            <button class="btn" type="submit">Lưu</button>
+            <a class="btn secondary" href="/admin/phong">Quay lại</a>
+        </form>
+    </div>
+</div>
+</body>
+</html>

@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html lang="vi" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Đăng nhập</title>
+    <link rel="stylesheet" th:href="@{/css/app.css}">
+</head>
+<body>
+<div class="login-page">
+    <div class="card login-box">
+        <h1>Đăng nhập hệ thống</h1>
+        <p>Quản lý khách sạn</p>
+
+        <div class="alert" th:if="${error}" th:text="${error}"></div>
+
+        <form class="form-stack" method="post" action="/login">
+            <div class="form-row">
+                <label>Tài khoản</label>
+                <input type="text" name="username" th:value="${username}" required>
+            </div>
+            <div class="form-row">
+                <label>Mật khẩu</label>
+                <input type="password" name="password" required>
+            </div>
+            <button class="btn" type="submit">Đăng nhập</button>
+        </form>
+
+<!--        <p style="margin-top:14px;color:#666">Tài khoản mẫu: <b>hieu</b> / <b>1</b></p>-->
+    </div>
+</div>
+</body>
+</html>

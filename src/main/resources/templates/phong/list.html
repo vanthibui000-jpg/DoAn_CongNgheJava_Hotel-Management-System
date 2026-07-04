@@ -1,0 +1,141 @@
+<!DOCTYPE html>
+<html lang="vi" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Quản lý phòng</title>
+    <link rel="stylesheet" th:href="@{/css/app.css}">
+</head>
+<body>
+<div th:replace="~{fragments/nav :: nav}"></div>
+
+<div class="container admin-wide">
+    <h1>Quản lý phòng</h1>
+
+    <div class="card admin-panel">
+        <div class="status-grid three-cols">
+            <div class="status-card success">
+                <span>Phòng trống</span>
+                <strong th:text="${phongTrong}">0</strong>
+            </div>
+            <div class="status-card warning">
+                <span>Đang thuê</span>
+                <strong th:text="${phongDangThue}">0</strong>
+            </div>
+            <div class="status-card danger-soft">
+                <span>Bảo trì</span>
+                <strong th:text="${phongBaoTri}">0</strong>
+            </div>
+        </div>
+
+        <div class="admin-toolbar room-toolbar">
+            <form class="toolbar-filter room-filter" method="get" action="/admin/phong">
+                <div class="form-row">
+                    <label>Mã phòng</label>
+                    <input type="text"
+                           name="keyword"
+                           placeholder="Nhập mã phòng cần tìm"
+                           th:value="${keyword}">
+                </div>
+
+                <div class="form-row">
+                    <label>Loại phòng</label>
+                    <select name="maLoaiPhong">
+                        <option value="">Tất cả loại phòng</option>
+                        <option th:each="lp : ${loaiPhongs}"
+                                th:value="${lp.maLoaiPhong}"
+                                th:selected="${maLoaiPhong != null and maLoaiPhong == lp.maLoaiPhong}"
+                                th:text="${lp.tenLoaiPhong}">
+                            Loại phòng
+                        </option>
+                    </select>
+                </div>
+
+                <div class="form-row">
+                    <label>Giá từ</label>
+                    <input type="number" name="giaTu" placeholder="300000" th:value="${giaTu}">
+                </div>
+
+                <div class="form-row">
+                    <label>Giá đến</label>
+                    <input type="number" name="giaDen" placeholder="4000000" th:value="${giaDen}">
+                </div>
+
+                <div class="form-row">
+                    <label>Ngày nhận</label>
+                    <input type="date" name="ngayNhan" th:value="${ngayNhan}">
+                </div>
+
+                <div class="form-row">
+                    <label>Ngày trả</label>
+                    <input type="date" name="ngayTra" th:value="${ngayTra}">
+                </div>
+
+                <div class="filter-actions">
+                    <button class="btn" type="submit">
+                        <i class="fa-solid fa-magnifying-glass"></i>
+                        Tìm kiếm
+                    </button>
+                    <a class="btn secondary" href="/admin/phong">
+                        <i class="fa-solid fa-rotate-right"></i>
+                        Làm mới
+                    </a>
+                </div>
+            </form>
+
+            <a class="btn" href="/admin/phong/them">
+                <i class="fa-solid fa-plus"></i>
+                Thêm phòng
+            </a>
+        </div>
+
+        <div class="alert" th:if="${dateError}" th:text="${dateError}"></div>
+
+        <table class="table admin-table room-table">
+            <thead>
+            <tr>
+                <th>Mã phòng</th>
+                <th>Hinh anh</th>
+                <th>Loại phòng</th>
+                <th>Giá phòng</th>
+                <th>Trạng thái</th>
+                <th>Thao tác</th>
+            </tr>
+            </thead>
+            <tbody>
+            <tr th:each="item : ${items}">
+                <td><span class="id-badge" th:text="${item.maPhong}">101</span></td>
+                <td>
+                    <div class="image-thumb" th:if="${item.hinhAnhDaiDienHienThi != null}">
+                        <img th:src="${item.hinhAnhDaiDienHienThi}" alt="Anh phong">
+                    </div>
+                    <span class="muted-text" th:if="${item.hinhAnhDaiDienHienThi == null}">Chua co anh</span>
+                </td>
+                <td th:text="${item.loaiPhong != null ? item.loaiPhong.tenLoaiPhong : ''}">Bình Dân</td>
+                <td th:text="${item.loaiPhong != null && item.loaiPhong.giaPhong != null ? #numbers.formatInteger(item.loaiPhong.giaPhong, 0, 'POINT') : ''}">
+                    300.000
+                </td>
+                <td>
+                    <span class="status-badge"
+                          th:classappend="${item.trangThai == 'Bảo trì' ? ' danger' : ((item.trangThai == 'Đang thuê' or item.trangThai == 'Đang sử dụng' or item.trangThai == 'Đã đặt') ? ' warning' : ' success')}"
+                          th:text="${item.trangThai != null and !#strings.isEmpty(item.trangThai) ? item.trangThai : 'Trống'}">
+                        Trống
+                    </span>
+                </td>
+                <td class="table-actions">
+                    <a class="btn small secondary" th:href="@{/admin/phong/sua/{id}(id=${item.maPhong})}">Sửa</a>
+                    <a class="btn small danger"
+                       th:href="@{/admin/phong/xoa/{id}(id=${item.maPhong})}"
+                       onclick="return confirm('Xóa phòng này?')">
+                        Xóa
+                    </a>
+                </td>
+            </tr>
+            <tr th:if="${#lists.isEmpty(items)}">
+                <td colspan="6" class="empty-row">Không tìm thấy phòng phù hợp</td>
+            </tr>
+            </tbody>
+        </table>
+    </div>
+</div>
+</body>
+</html>

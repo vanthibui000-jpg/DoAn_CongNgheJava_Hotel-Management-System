@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html lang="vi" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Tài khoản</title>
+    <link rel="stylesheet" th:href="@{/css/app.css}">
+</head>
+<body class="client-page">
+<div th:replace="~{client/fragments :: nav}"></div>
+<main class="client-section">
+    <section class="account-hero client-card">
+        <div class="account-avatar" th:text="${not #strings.isEmpty(khachHang.hoTen) ? #strings.substring(khachHang.hoTen, 0, 1) : 'K'}"></div>
+        <div>
+            <p class="eyebrow">Tài khoản khách hàng</p>
+            <h1 th:text="${khachHang.hoTen}">Tài khoản của tôi</h1>
+            <p>Thông tin liên hệ và lịch sử đặt phòng của bạn tại Khách sạn Vip.</p>
+        </div>
+        <a class="btn" href="/tai-khoan/lich-su-dat-phong">Lịch sử đặt phòng</a>
+    </section>
+
+    <section class="account-profile-grid">
+        <div class="client-card">
+            <h2>Thông tin cá nhân</h2>
+            <div class="account-info-list">
+                <div>
+                    <span>Họ tên</span>
+                    <strong th:text="${khachHang.hoTen}"></strong>
+                </div>
+                <div>
+                    <span>Email</span>
+                    <strong th:text="${khachHang.email}"></strong>
+                </div>
+                <div>
+                    <span>Điện thoại</span>
+                    <strong th:text="${khachHang.dienThoai}"></strong>
+                </div>
+                <div>
+                    <span>Địa chỉ</span>
+                    <strong th:text="${not #strings.isEmpty(khachHang.diaChi) ? khachHang.diaChi : 'Chưa cập nhật'}"></strong>
+                </div>
+            </div>
+        </div>
+        <div class="client-card account-action-card">
+            <h2>Truy cập nhanh</h2>
+            <a class="btn" href="/dat-phong">Đặt phòng mới</a>
+            <a class="btn secondary" href="/tai-khoan/lich-su-dat-phong">Xem đơn đã đặt</a>
+            <a class="btn secondary" href="/tai-khoan/cap-nhat">Cập nhật thông tin</a>
+            <a class="btn secondary" href="/tai-khoan/doi-mat-khau">Đổi mật khẩu</a>
+            <a class="btn secondary" href="/danh-gia">Gửi đánh giá</a>
+        </div>
+    </section>
+</main>
+<div th:replace="~{client/fragments :: footer}"></div>
+</body>
+</html>

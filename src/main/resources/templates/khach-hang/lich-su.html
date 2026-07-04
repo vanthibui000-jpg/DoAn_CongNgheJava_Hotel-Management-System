@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html lang="vi" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Lịch sử đặt phòng</title>
+    <link rel="stylesheet" th:href="@{/css/app.css}">
+</head>
+<body>
+<div th:replace="~{fragments/nav :: nav}"></div>
+<div class="container admin-wide">
+    <h1 class="page-title-with-icon">📜 Lịch sử đặt phòng</h1>
+
+    <div class="card history-card">
+        <h2>👤 Thông tin khách hàng</h2>
+        <table class="table compact-table info-table">
+            <tbody>
+            <tr>
+                <th>Mã khách hàng:</th>
+                <td th:text="${khachHang.maKhachHang}">1</td>
+                <th>Họ tên:</th>
+                <td th:text="${khachHang.hoTen}">Le Van Teo</td>
+            </tr>
+            <tr>
+                <th>Điện thoại:</th>
+                <td th:text="${khachHang.dienThoai}">123123132</td>
+                <th>CMND/CCCD:</th>
+                <td th:text="${khachHang.cmnd}">258963147</td>
+            </tr>
+            <tr>
+                <th>Email:</th>
+                <td th:text="${khachHang.email}">teo@gmail.com</td>
+                <th>Địa chỉ:</th>
+                <td th:text="${khachHang.diaChi}">Ha Noi</td>
+            </tr>
+            </tbody>
+        </table>
+    </div>
+
+    <div class="card history-card">
+        <div class="section-heading">
+            <h2>🏨 Các đơn đặt phòng</h2>
+            <a class="btn secondary" href="/admin/khach-hang">Quay lại</a>
+        </div>
+        <table class="table admin-table">
+            <thead>
+            <tr>
+                <th>Mã đơn</th>
+                <th>Phòng</th>
+                <th>Loại phòng</th>
+                <th>Ngày nhận</th>
+                <th>Ngày trả</th>
+                <th>Trạng thái</th>
+                <th>Chi tiết</th>
+            </tr>
+            </thead>
+            <tbody>
+            <tr th:each="item : ${lichSu}">
+                <td th:text="${item.maCtDatPhong}">1</td>
+                <td th:text="${item.phong != null ? item.phong.maPhong : ''}">101</td>
+                <td th:text="${item.phong != null && item.phong.loaiPhong != null ? item.phong.loaiPhong.tenLoaiPhong : ''}">Bình Dân</td>
+                <td th:text="${item.ngayNhan}">2019-05-05</td>
+                <td th:text="${item.ngayTra}">2019-05-07</td>
+                <td><span class="status-badge warning" th:text="${item.trangThaiHienThi}">Đã đặt</span></td>
+                <td><a class="btn small" th:href="@{/admin/dat-phong/chi-tiet/{id}(id=${item.maCtDatPhong})}">📋 Chi tiết</a></td>
+            </tr>
+            <tr th:if="${#lists.isEmpty(lichSu)}">
+                <td colspan="7" class="empty-row">Khách hàng này chưa có lịch sử đặt phòng</td>
+            </tr>
+            </tbody>
+        </table>
+    </div>
+</div>
+</body>
+</html>
